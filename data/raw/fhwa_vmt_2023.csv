@@ -1,0 +1,22 @@
+# FHWA monthly vehicle miles traveled, all US roads, 2023.
+# Source: Federal Highway Administration, Traffic Volume Trends (TVT),
+#         https://www.fhwa.dot.gov/policyinformation/travel_monitoring/tvt.cfm
+# Units:  billions of miles.
+# These are the fit targets: the bounded least-squares stage chooses one set of
+# per-bin average distances so that BTS trip counts reproduce these totals.
+#
+# Transcribed from the published notebook's FHWA_VMT_B dictionary, which is the
+# form the paper's numbers were produced from. Treated as an immutable input.
+month,vmt_billion_miles
+1,248.9
+2,235.4
+3,273.7
+4,258.2
+5,289.6
+6,285.6
+7,289.8
+8,290.9
+9,278.0
+10,284.0
+11,265.1
+12,263.6

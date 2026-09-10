@@ -1,0 +1,61 @@
+[build-system]
+requires = ["setuptools>=68,<81"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "erev-vmtalloc"
+version = "1.0.0"
+description = "VMT allocation between electric and gasoline modes for extended-range EVs, as published in Energies 2025, 18, 6448"
+readme = "README.md"
+requires-python = ">=3.11,<3.14"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [
+    { name = "Patil, Hritik Vivek" },
+    { name = "Kumbhar, Akhilesh Arunkumar" },
+    { name = "Jones, Erick C., Jr." },
+]
+keywords = [
+    "extended-range electric vehicles",
+    "vehicle miles traveled",
+    "transportation electrification",
+    "emissions",
+    "energy policy",
+]
+
+# Upper bounds are required (standard, Part 1 rule 3): an unpinned major
+# version will one day change an API and either break or silently alter a
+# published number. A range says what the code tolerates; requirements-lock.txt
+# beside it says what actually ran.
+dependencies = [
+    "numpy>=1.26,<3",
+    "pandas>=2.0,<3",
+    "scipy>=1.11,<2",
+    "matplotlib>=3.8,<4",
+    "requests>=2.31,<3",
+    "PyYAML>=6.0,<7",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0,<9",
+    "ruff>=0.6,<0.15",
+]
+
+[project.urls]
+Paper = "https://doi.org/10.3390/en18246448"
+Standard = "https://github.com/sear-labs/code-standard"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"
+
+[tool.ruff]
+line-length = 100
+src = ["src", "scripts", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]

@@ -1,0 +1,7 @@
+# Provenance for bts_trips_2023.json. Written by scripts/fetch_sources.py.
+# This file is an INPUT (Part 1 rule 4): it is never edited by an
+# analysis stage. Re-fetching is a deliberate act with a new date.
+source_url: https://data.bts.gov/resource/w96p-f2qv.json
+description: BTS Trips by Distance, national level, monthly sums for 2023, by trip-distance bin.
+fetched_utc: 2026-09-10T21:08:38Z
+sha256: e5b24b9b742ae9f5820392025bef96045e1908c18d352900d11c1446a1f8db60

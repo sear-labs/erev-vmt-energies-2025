@@ -1,0 +1,18 @@
+# Normalize line endings so a Windows working copy and a Linux CI runner agree.
+#
+# This is load-bearing, not cosmetic: CI checks `git diff --exit-code results/`
+# to catch a code change that moved a number without the committed tables being
+# regenerated. Without normalization every CSV differs by CRLF alone on one
+# platform, and that check fails for a reason that has nothing to do with the
+# numbers -- which trains people to ignore it.
+* text=auto eol=lf
+
+# Binary: never touch these.
+*.png binary
+*.pdf binary
+*.xlsx binary
+
+# Notebooks are JSON, but the frozen one is evidence. Do not let a merge tool
+# rewrite it; a conflict here should be resolved by a human deciding which run
+# is the published one.
+*.ipynb -merge text eol=lf

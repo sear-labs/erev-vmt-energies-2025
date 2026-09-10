@@ -1,0 +1,66 @@
+cff-version: 1.2.0
+title: >-
+  erev-vmtalloc-energies-2025: VMT allocation between electric and gasoline
+  modes for extended-range electric vehicles
+message: >-
+  If you use this software, please cite both the software and the paper it
+  accompanies.
+type: software
+authors:
+  - family-names: Patil
+    given-names: Hritik Vivek
+    affiliation: >-
+      Department of Computer Science and Engineering, University of Texas at
+      Arlington
+  - family-names: Kumbhar
+    given-names: Akhilesh Arunkumar
+    affiliation: >-
+      Department of Computer Science and Engineering, University of Texas at
+      Arlington
+  - family-names: Jones
+    given-names: Erick C.
+    name-suffix: Jr.
+    affiliation: >-
+      Department of Industrial, Manufacturing, and Systems Engineering,
+      University of Texas at Arlington
+    email: erick.jones@uta.edu
+repository-code: https://github.com/sear-labs/erev-vmtalloc-energies-2025
+license: MIT
+version: 1.0.0
+date-released: '2026-09-10'
+keywords:
+  - extended-range electric vehicles
+  - vehicle miles traveled
+  - transportation electrification
+  - emissions
+  - energy policy
+
+# The concept DOI goes here once Zenodo has minted one. It is added AFTER the
+# first tagged release, because a DOI cannot exist before one -- see the
+# standard, Part 5. Use the concept DOI, not a version DOI: it resolves to the
+# latest version forever and never needs editing again.
+# doi: 10.5281/zenodo.XXXXXXX
+
+preferred-citation:
+  type: article
+  title: >-
+    Contributions of Extended-Range Electric Vehicles (EREVs) to Electrified
+    Miles, Emissions and Transportation Cost Reduction
+  authors:
+    - family-names: Patil
+      given-names: Hritik Vivek
+    - family-names: Kumbhar
+      given-names: Akhilesh Arunkumar
+    - family-names: Jones
+      given-names: Erick C.
+      name-suffix: Jr.
+  journal: Energies
+  volume: 18
+  issue: 24
+  start: 6448
+  year: 2025
+  month: 12
+  doi: 10.3390/en18246448
+  publisher:
+    name: MDPI
+  license: CC-BY-4.0

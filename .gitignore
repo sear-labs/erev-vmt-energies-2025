@@ -1,0 +1,71 @@
+# Adapted from sear-labs/code-standard gitignore-starter.
+# Verified with `git check-ignore -v` before the first commit, not assumed.
+
+# --- credentials: the one mistake that cannot be undone -----------------
+.env
+.env.*
+*.lic
+gamslice.txt
+gamslice*.txt
+*license.dat
+*licence.dat
+WLSKeyinfo*
+*.pem
+*.key
+*_key*
+*_secret*
+*credentials*
+*token*
+service-account*.json
+
+# --- data ----------------------------------------------------------------
+# Raw is ignored by default, then the API snapshots are un-ignored below.
+# They qualify for the starter's "small, public and immutable" exception: the
+# BTS pull is 12 rows, the ACS pull is 1 row, both are open federal data, and
+# both are frozen at the fetch date recorded in their sidecar .meta.yaml.
+# Without them a clean clone cannot reproduce the paper offline, which is the
+# property Part 1 rule 1 is actually protecting.
+data/raw/*
+data/interim/*
+data/processed/*
+!data/**/.gitkeep
+!data/raw/*.json
+!data/raw/*.csv
+!data/raw/*.meta.yaml
+!data/raw/MANIFEST.sha256
+
+# --- generated results ---------------------------------------------------
+# Deliberate exception (standard Part 1 rule 5): final figures and tables ARE
+# committed so a reader sees the paper's outputs without running anything.
+# Stated in README.md under "What is deliberately committed".
+results/*
+!results/figures/
+!results/tables/
+!results/**/.gitkeep
+
+# --- python --------------------------------------------------------------
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+*.egg-info/
+build/
+dist/
+.venv/
+venv/
+.pytest_cache/
+.ruff_cache/
+
+# --- editor backups ------------------------------------------------------
+*.bak
+*.orig
+*~
+
+# --- os / editor ---------------------------------------------------------
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
+
+# --- harness -------------------------------------------------------------
+.claude/settings.local.json

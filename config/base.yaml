@@ -1,0 +1,122 @@
+# Base case for Patil, Kumbhar & Jones, Energies 2025, 18, 6448.
+#
+# Every value here was a module-level constant in the original notebook
+# (notebooks/2025-12-09-as-published.ipynb). Changing a scenario is an edit to
+# this file or an overlay in scenarios/, never an edit to src/ and never a
+# copy of the script. See the standard, Part 1 rule 2.
+#
+# FHWA monthly VMT is NOT here: it is measured input, not a knob, and lives in
+# data/raw/fhwa_vmt_2023.csv with its own provenance sidecar.
+
+year: 2023
+
+# Table 1 in the paper is a single month.
+month_to_show: 12
+
+# Base case requires the battery to cover the trip out AND back, with no
+# mid-trip charging. Setting this false gives the one-way relaxation.
+round_trip: true
+
+# Electric ranges evaluated, in miles.
+ranges: [50, 75, 100, 125, 150]
+
+# Scale each month's fitted VMT so the annual total matches FHWA exactly.
+# The bin distances x_opt are fitted once across all months and are NOT
+# refitted per month; this only rescales the result.
+normalize_to_fhwa: true
+
+# Bounds on the fitted average distance within each BTS trip-distance bin,
+# in miles. The bounded least-squares fit cannot leave these, which is what
+# keeps a bin's mean inside the bin it came from. The open-ended 500+ bin is
+# capped at 1000 by assumption -- see README, "Stated residuals".
+bin_bounds:
+  "0-1":     [0.25, 1.0]
+  "1-3":     [1.0, 3.0]
+  "3-5":     [3.0, 5.0]
+  "5-10":    [5.0, 10.0]
+  "10-25":   [10.0, 25.0]
+  "25-50":   [25.0, 50.0]
+  "50-100":  [50.0, 100.0]
+  "100-250": [100.0, 250.0]
+  "250-500": [250.0, 500.0]
+  "500+":    [500.0, 1000.0]
+
+# Emissions, efficiency and cost factors.
+emissions:
+  mpg_gas: 26.2              # miles/gal, national average fuel economy
+  co2_per_gal: 8887.0        # g CO2 per gallon of gasoline burned
+  ev_kwh_per_mi: 0.29        # kWh drawn from the grid per electric mile
+  grid_g_per_kwh: 387.0      # g CO2 per kWh, national average grid intensity
+
+battery:
+  eta_mi_per_kwh: 3.6        # mi/kWh used for pack sizing (pack = range / eta)
+  pack_cost_per_kwh: 115.0   # $/kWh pack cost
+
+fleet:
+  avg_driver_miles: 13496.0  # miles/vehicle/year; fleet size = total VMT / this
+
+# Charging-frequency ladder. Each level is a housing situation mapped to a
+# number of charges per week. Weights over these levels come from ACS B25032
+# (tenure by units in structure); see scenarios below.
+charging:
+  charges_per_week:
+    none:     0.0
+    errands:  0.5
+    weekly:   1.0
+    work:     3.0
+    driveway: 5.0
+    garage:   6.0
+    everyday: 7.0
+
+  # Order matters: the Low and More scenarios shift every household one step
+  # down or up this ladder.
+  level_order: [none, errands, weekly, work, driveway, garage, everyday]
+
+  # Where the weights over charging levels come from.
+  #
+  #   published_fallback  what the published run ACTUALLY used
+  #   acs_b25032          what the paper DESCRIBES: derived from ACS
+  #
+  # The default is published_fallback so that `run_all.py` reproduces the
+  # paper. This is not an endorsement of it: the notebook's ACS lookup matched
+  # zero variables and fell through to a hardcoded vector while only emitting a
+  # warning. See README, "Known defect: the ACS weights in the paper are the
+  # fallback", and tests/test_acs_lookup.py, which pins the cause.
+  weights_source: published_fallback
+
+  # The hardcoded vector the published run fell back to. Reproduced verbatim
+  # from the notebook so the paper's scenario numbers can be regenerated.
+  published_fallback_weights:
+    garage:   0.45
+    driveway: 0.25
+    work:     0.20
+    weekly:   0.10
+
+  # ACS B25032 label patterns -> charging level. `units` must match the text
+  # after the final "!!" in the Census variable label EXACTLY.
+  #
+  # Verified against api.census.gov on 2026-09-10. The categories are "2" and
+  # "3 or 4", not "2 apartments" and "3 or 4 apartments"; the tenure text is
+  # "Owner-occupied housing units", hyphenated. All three of those differed
+  # from what the notebook searched for, which is why it matched nothing.
+  acs_mapping:
+    garage:
+      - {tenure: owner,  units: "1, detached"}
+    driveway:
+      - {tenure: renter, units: "1, detached"}
+      - {tenure: owner,  units: "1, attached"}
+      - {tenure: owner,  units: "2"}
+      - {tenure: owner,  units: "3 or 4"}
+    work:
+      - {tenure: renter, units: "1, attached"}
+      - {tenure: owner,  units: "5 to 9"}
+      - {tenure: owner,  units: "10 to 19"}
+      - {tenure: owner,  units: "20 to 49"}
+    weekly:
+      - {tenure: renter, units: "2"}
+      - {tenure: renter, units: "3 or 4"}
+      - {tenure: owner,  units: "50 or more"}
+
+# Scenarios reported in the paper. Base_EachTrip is the unconstrained case:
+# every trip starts with a full battery.
+scenarios: [Base_EachTrip, Low, Normal, More]

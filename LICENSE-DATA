@@ -1,0 +1,47 @@
+Creative Commons Attribution 4.0 International (CC BY 4.0)
+
+Copyright (c) 2025 Hritik Vivek Patil, Akhilesh Arunkumar Kumbhar,
+and Erick C. Jones, Jr.
+
+WHAT THIS COVERS
+----------------
+This licence covers the non-software content of this repository:
+
+    data/          frozen input snapshots and their provenance sidecars
+    results/       committed tables and figures
+    notebooks/     the frozen as-published notebook
+
+The software -- `src/`, `scripts/`, `tests/` -- is licensed MIT; see LICENSE.
+The split is stated by path in README.md so that no file is claimed by two
+documents.
+
+WHY A SECOND LICENCE
+--------------------
+MIT speaks about "the Software". It says nothing about a database right, so
+without this file the tables and figures a reader is invited to reuse would be
+the one part of the repository whose terms are unstated.
+
+UPSTREAM DATA
+-------------
+The underlying federal data are US Government works and are not subject to
+copyright protection in the United States:
+
+    Bureau of Transportation Statistics, Trips by Distance
+    Federal Highway Administration, Traffic Volume Trends
+    US Census Bureau, American Community Survey table B25032
+
+This licence applies to the compilation, derived tables and figures in this
+repository, not to those sources.
+
+FULL TEXT
+---------
+The full licence text is at https://creativecommons.org/licenses/by/4.0/legalcode
+
+You are free to share and adapt this material for any purpose, including
+commercially, provided you give appropriate credit, provide a link to the
+licence, and indicate if changes were made. Attribution should cite:
+
+    Patil, H.V., Kumbhar, A.A. & Jones, E.C., Jr. "Contributions of
+    Extended-Range Electric Vehicles (EREVs) to Electrified Miles, Emissions
+    and Transportation Cost Reduction." Energies 2025, 18, 6448.
+    https://doi.org/10.3390/en18246448
