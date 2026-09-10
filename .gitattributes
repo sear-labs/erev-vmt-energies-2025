@@ -12,6 +12,15 @@
 *.pdf binary
 *.xlsx binary
 
+# Frozen inputs are byte-exact or they are not frozen.
+#
+# data/raw/MANIFEST.sha256 hashes these files as fetched. If git rewrites their
+# line endings on checkout, the bytes on disk stop matching the recorded hash
+# and tests/test_smoke.py::test_inputs_are_not_modified fails on a clean Windows
+# clone -- reporting tampering that never happened. Measured: it did exactly
+# that on the first clean-clone test. `-text` disables all conversion.
+data/raw/** -text
+
 # Notebooks are JSON, but the frozen one is evidence. Do not let a merge tool
 # rewrite it; a conflict here should be resolved by a human deciding which run
 # is the published one.

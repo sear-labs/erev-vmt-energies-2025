@@ -57,7 +57,7 @@ def main() -> int:
 
     # --- Stage 1 reporting -------------------------------------------------
     monthly = report.monthly_fit_table(fitted)
-    monthly.to_csv(tables_dir / "monthly_fit.csv", index=False)
+    report.write_csv(monthly, tables_dir / "monthly_fit.csv")
     worst_pre = float(np.abs(fitted.monthly_error_pct(prenorm=True)).max())
     print(f"Fit: max |monthly error| pre-normalization = {worst_pre:.2f}%")
     if config.normalize_to_fhwa:
@@ -65,10 +65,10 @@ def main() -> int:
         print(f"     max |monthly error| post-normalization = {worst_post:.6f}%")
 
     month_tbl = report.month_table(fitted, config.month_to_show)
-    month_tbl.to_csv(tables_dir / f"table1_month_{config.month_to_show:02d}.csv", index=False)
+    report.write_csv(month_tbl, tables_dir / f"table1_month_{config.month_to_show:02d}.csv")
 
     annual_tbl = report.annual_table(fitted)
-    annual_tbl.to_csv(tables_dir / "table1_annual.csv", index=False)
+    report.write_csv(annual_tbl, tables_dir / "table1_annual.csv")
     print(f"     annual VMT (normalized) = {fitted.annual_vmt_billion:.1f} B miles\n")
 
     # --- Stage 2: base case ------------------------------------------------
@@ -77,7 +77,7 @@ def main() -> int:
         for r in config.ranges
     ]
     summary = metrics.summarize(base_splits, config)
-    summary.to_csv(tables_dir / "range_summary_base.csv", index=False)
+    report.write_csv(summary, tables_dir / "range_summary_base.csv")
 
     print("Base case (round-trip constraint, unlimited charging):")
     for split in base_splits:
@@ -88,8 +88,8 @@ def main() -> int:
         )
 
     for split in base_splits:
-        split.per_bin.to_csv(
-            tables_dir / f"per_bin_base_R{int(split.electric_range)}.csv", index=False
+        report.write_csv(
+            split.per_bin, tables_dir / f"per_bin_base_R{int(split.electric_range)}.csv"
         )
 
     # --- Stage 2b: charging-frequency scenarios ----------------------------
@@ -135,11 +135,12 @@ def main() -> int:
                 )
 
         table = metrics.summarize(splits, config)
-        table.to_csv(tables_dir / f"range_summary_{scenario}.csv", index=False)
+        report.write_csv(table, tables_dir / f"range_summary_{scenario}.csv")
         scenario_rows.append(table)
 
-    pd.concat(scenario_rows, ignore_index=True).to_csv(
-        tables_dir / "range_summary_all_scenarios.csv", index=False
+    report.write_csv(
+        pd.concat(scenario_rows, ignore_index=True),
+        tables_dir / "range_summary_all_scenarios.csv",
     )
 
     # --- Figures -----------------------------------------------------------

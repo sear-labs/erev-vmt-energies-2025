@@ -111,6 +111,21 @@ def annual_table(fitted: FittedVmt) -> pd.DataFrame:
     )
 
 
+def write_csv(frame: pd.DataFrame, path: Path) -> Path:
+    """Write a results table with LF endings on every platform.
+
+    `to_csv` follows the OS by default, so the same run emits CRLF on Windows
+    and LF on Linux. Since results/ is committed, that makes every table differ
+    between a local run and CI for reasons unrelated to any number -- and CI
+    compares committed results against a fresh run to catch a moved number.
+    A check that goes red on the platform rather than on the result gets
+    ignored, so the artifact is made platform-independent instead.
+    """
+    path.parent.mkdir(parents=True, exist_ok=True)
+    frame.to_csv(path, index=False, lineterminator="\n")
+    return path
+
+
 def _save(fig_dir: Path, name: str) -> Path:
     path = fig_dir / name
     plt.tight_layout()
