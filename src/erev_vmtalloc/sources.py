@@ -236,15 +236,29 @@ def fetch_acs_units(api_key: str | None = None) -> dict[str, float]:
 # --------------------------------------------------------------------------
 
 
+def _write_text_lf(path: Path, text: str) -> None:
+    """Write text with LF endings on every platform.
+
+    `Path.write_text` applies the platform's newline translation, so on Windows
+    it wrote CRLF while the sidecar recorded the SHA-256 of the LF string. The
+    two provenance records for the same file then disagreed, and MANIFEST.sha256
+    -- hashing the real bytes -- was the one that drifted. A frozen input has to
+    be byte-identical everywhere or "frozen" means nothing.
+    """
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with open(path, "w", encoding="utf-8", newline="\n") as handle:
+        handle.write(text)
+
+
 def write_snapshot(path: Path, payload, *, source_url: str, description: str) -> None:
     """Write a snapshot plus the sidecar that says where it came from and when."""
-    path.parent.mkdir(parents=True, exist_ok=True)
     text = json.dumps(payload, indent=2, sort_keys=True)
-    path.write_text(text, encoding="utf-8")
+    _write_text_lf(path, text)
 
     digest = hashlib.sha256(text.encode("utf-8")).hexdigest()
     sidecar = path.with_suffix(path.suffix + ".meta.yaml")
-    sidecar.write_text(
+    _write_text_lf(
+        sidecar,
         "# Provenance for {name}. Written by scripts/fetch_sources.py.\n"
         "# This file is an INPUT (Part 1 rule 4): it is never edited by an\n"
         "# analysis stage. Re-fetching is a deliberate act with a new date.\n"
@@ -258,7 +272,6 @@ def write_snapshot(path: Path, payload, *, source_url: str, description: str) ->
             when=_dt.datetime.now(_dt.UTC).strftime("%Y-%m-%dT%H:%M:%SZ"),
             digest=digest,
         ),
-        encoding="utf-8",
     )
 
 

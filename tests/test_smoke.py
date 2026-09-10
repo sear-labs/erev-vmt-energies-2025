@@ -64,16 +64,60 @@ def test_run_needs_no_network(run_output):
     )
 
 
+def _manifest_entries():
+    manifest = (REPO_ROOT / "data" / "raw" / "MANIFEST.sha256").read_text(encoding="utf-8")
+    return [line.split("  ", 1) for line in manifest.strip().splitlines()]
+
+
 def test_inputs_are_not_modified(run_output):
     """Part 1 rule 4: no stage writes back to data/raw/."""
     import hashlib
 
-    manifest = (REPO_ROOT / "data" / "raw" / "MANIFEST.sha256").read_text(encoding="utf-8")
-    for line in manifest.strip().splitlines():
-        digest, name = line.split("  ", 1)
+    for digest, name in _manifest_entries():
         path = REPO_ROOT / "data" / "raw" / name
         actual = hashlib.sha256(path.read_bytes()).hexdigest()
         assert actual == digest, (
             f"{name} has changed since it was frozen. Inputs are immutable; if the "
             "change was deliberate, re-run scripts/fetch_sources.py --refresh."
+        )
+
+
+def test_provenance_records_agree():
+    """The sidecar and the manifest must hash the same bytes.
+
+    Each snapshot carries its hash twice: in its own `.meta.yaml` and in
+    MANIFEST.sha256. They were written by different code paths and silently
+    disagreed -- one hashed the logical text, the other the bytes on disk, and
+    on Windows those differed by line endings. Two provenance records that
+    disagree are worse than one, because whichever a reader checks looks
+    authoritative.
+    """
+    raw_dir = REPO_ROOT / "data" / "raw"
+    by_name = {name: digest for digest, name in _manifest_entries()}
+
+    checked = 0
+    for sidecar in raw_dir.glob("*.meta.yaml"):
+        subject = sidecar.name.removesuffix(".meta.yaml")
+        recorded = next(
+            line.split(":", 1)[1].strip()
+            for line in sidecar.read_text(encoding="utf-8").splitlines()
+            if line.startswith("sha256:")
+        )
+        assert subject in by_name, f"{subject} has a sidecar but no manifest entry"
+        assert recorded == by_name[subject], (
+            f"{subject}: sidecar records {recorded[:12]}... but MANIFEST records "
+            f"{by_name[subject][:12]}.... The two provenance records disagree."
+        )
+        checked += 1
+    assert checked > 0, "No provenance sidecars found to check"
+
+
+def test_inputs_use_lf_endings():
+    """Frozen inputs are byte-identical on every platform, or they are not frozen."""
+    for _, name in _manifest_entries():
+        data = (REPO_ROOT / "data" / "raw" / name).read_bytes()
+        assert b"\r\n" not in data, (
+            f"{name} contains CRLF. Its hash then differs between a Windows and a "
+            "Linux checkout, and the immutability guard fails for a reason that has "
+            "nothing to do with the data. See .gitattributes and sources._write_text_lf."
         )
