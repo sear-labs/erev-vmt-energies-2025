@@ -1,6 +1,6 @@
 cff-version: 1.2.0
 title: >-
-  erev-vmtalloc-energies-2025: VMT allocation between electric and gasoline
+  erev-data-energies-2025: VMT allocation between electric and gasoline
   modes for extended-range electric vehicles
 message: >-
   If you use this software, please cite both the software and the paper it
@@ -24,7 +24,7 @@ authors:
       Department of Industrial, Manufacturing, and Systems Engineering,
       University of Texas at Arlington
     email: erick.jones@uta.edu
-repository-code: https://github.com/sear-labs/erev-vmtalloc-energies-2025
+repository-code: https://github.com/sear-labs/erev-data-energies-2025
 license: MIT
 version: 1.0.0
 date-released: '2026-09-10'

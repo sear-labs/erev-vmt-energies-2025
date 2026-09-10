@@ -1,4 +1,4 @@
-# erev-vmtalloc-energies-2025
+# erev-data-energies-2025
 
 How much of US vehicle travel could an extended-range electric vehicle (EREV)
 drive on battery, as a function of its electric range and how often it charges?
