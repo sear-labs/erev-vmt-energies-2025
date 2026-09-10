@@ -39,7 +39,7 @@ Requires Python 3.11–3.13. No network, no API key.
 python -m venv .venv && .venv/bin/activate      # Windows: .venv\Scripts\activate
 pip install -e ".[dev]"
 python scripts/run_all.py                        # the one entry point
-pytest                                           # 24 tests
+pytest                                           # 26 tests
 ```
 
 `run_all.py` reads the frozen snapshots in `data/raw/` and writes
@@ -198,5 +198,5 @@ scripts/run_all.py        the one entry point
 scripts/fetch_sources.py  the only script that touches the network
 notebooks/                frozen as-published original
 results/                  committed tables and figures
-tests/                    24 tests, every guard watched to fail
+tests/                    26 tests, every guard watched to fail
 ```
