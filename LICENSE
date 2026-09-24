@@ -3,10 +3,6 @@ MIT License
 Copyright (c) 2025 Hritik Vivek Patil, Akhilesh Arunkumar Kumbhar,
 and Erick C. Jones, Jr.
 
-This licence covers the SOFTWARE in this repository: `src/`, `scripts/`, and
-`tests/`. It does not cover the data, results or notebooks -- those are
-licensed CC BY 4.0, see LICENSE-DATA. The split is stated by path in README.md.
-
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
 in the Software without restriction, including without limitation the rights
