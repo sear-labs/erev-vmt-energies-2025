@@ -75,12 +75,12 @@ charging:
   # Where the weights over charging levels come from.
   #
   #   published_fallback  what the published run ACTUALLY used
-  #   acs_b25032          what the paper DESCRIBES: derived from ACS
+  #   acs_b25032          what the notebook INTENDED: derived from ACS B25032
   #
   # The default is published_fallback so that `run_all.py` reproduces the
   # paper. This is not an endorsement of it: the notebook's ACS lookup matched
   # zero variables and fell through to a hardcoded vector while only emitting a
-  # warning. See README, "Known defect: the ACS weights in the paper are the
+  # warning. See README, "Known defect: the scenario weights are a hardcoded
   # fallback", and tests/test_acs_lookup.py, which pins the cause.
   weights_source: published_fallback
 

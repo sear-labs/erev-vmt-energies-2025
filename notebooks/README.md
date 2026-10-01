@@ -11,7 +11,7 @@ is never rewritten. The maintained implementation is `src/erev_vmtalloc/`.
 
 - Tidy it, reformat it, or split its single cell.
 - Fix its bugs. It has at least one that reached print — see README.md,
-  "Known defect: the paper's ACS weights are a fallback". Fixing it here would
+  "Known defect: the scenario weights are a hardcoded fallback". Fixing it here would
   destroy the only record of what produced the published scenario numbers.
 - Strip its outputs. They are the published run.
 - Re-execute it. It calls the BTS and Census APIs live, so re-running it now

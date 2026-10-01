@@ -75,7 +75,7 @@ def base_level_weights(acs_counts: dict[str, float], config) -> dict[str, float]
     Which source is used is a configuration choice, not a runtime accident:
 
         published_fallback  the hardcoded vector the published run used
-        acs_b25032          derived from the ACS snapshot, as the paper describes
+        acs_b25032          derived from the ACS snapshot, as the notebook intended
 
     See README, "Known defect", for why these differ.
     """

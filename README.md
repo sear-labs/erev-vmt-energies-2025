@@ -111,39 +111,59 @@ Against the usual rule that generated files stay out of git:
   evidence of what produced the published numbers. It is frozen: not
   maintained, not refactored, not bug-fixed. Corrections go in `src/`.
 
-## Known defect: the paper's ACS weights are a fallback
+## Known defect: the scenario weights are a hardcoded fallback
 
-**The scenario weights described in the paper were never computed.** The
-notebook selected Census B25032 variables with
+**In short.** The "by scenario" results (the *Normal*, *Low* and *More* charging scenarios) depend
+on how households are split across housing types, because housing type sets how often a household
+can charge. The code was meant to take that split from US Census data (American Community Survey
+table B25032, housing tenure by units in structure). Its lookup matched nothing, so it silently used
+a fixed split instead: **45% garage, 25% driveway, 20% workplace, 10% weekly public charging.** Every
+*Normal*, *Low* and *More* number in the paper rests on that fixed split.
+
+**How much it matters.** In 14 of the 15 scenario-and-range combinations, not at all. The split only
+changes a result when the charging budget binds, and with the fixed split it binds once: the *Low*
+scenario at a 50-mile range (62.61% of miles electric). Every other combination is the uncapped
+result, which doesn't use the split.
+
+**What isn't known.** The corrected Census-based split has not been run. It needs a Census API key,
+and none was available when this was written (2026-10-01). So nobody yet knows how far the *Low*
+50-mile number would move, or whether a different split would make the budget bind in other
+combinations too.
+
+**What the paper says.** Section 3.4 describes four charging frequencies (7, 5, 3 and 2 days a week)
+and ties each to a housing type (owned single-family home, rented single-family home, smaller
+multifamily, apartment). It **does not cite Census data or say how households were weighted across
+housing types.** So the paper doesn't state anything false about the weights. The defect is that the
+code behind the *Normal*, *Low* and *More* results did something other than what it was written to
+do. The charging-frequency results themselves (Figures 4, 5, 7, 9 and 11) fix the number of charges
+per week directly and use no weights.
+
+### The code detail
+
+The notebook selected Census B25032 variables with
 
 ```python
 if side in lab and pattern in lab and ("!!Estimate" in lab)
 ```
 
-where `side` was `"Owner occupied"` and `pattern` was e.g. `"2 apartments"`.
-Measured against the live API on 2026-09-10, that predicate matches **zero of
-23 variables**, for three independent reasons:
+where `side` was `"Owner occupied"` and `pattern` was e.g. `"2 apartments"`. Measured against the
+live API on 2026-09-10, that predicate matches **zero of 23 variables**, for three independent
+reasons:
 
 | looked for | actually is |
 |---|---|
 | `Owner occupied` | `Owner-occupied housing units` (hyphenated) |
-| `!!Estimate` | label *starts* `Estimate!!` — the substring never occurs |
+| `!!Estimate` | label *starts* `Estimate!!`, so the substring never occurs |
 | `2 apartments`, `3 or 4 apartments` | `2`, `3 or 4` |
 
-With no matches the notebook hit its fallback, emitted a `warnings.warn`, and
-returned a hardcoded `{garage: .45, driveway: .25, work: .20, weekly: .10}`.
-Those are the weights behind every scenario number in the paper.
+With no matches the notebook hit its fallback, emitted a `warnings.warn`, and returned the hardcoded
+`{garage: .45, driveway: .25, work: .20, weekly: .10}`.
 
-This is reproduced faithfully rather than silently corrected.
-`config/base.yaml` sets `charging.weights_source: published_fallback`, so
-`run_all.py` regenerates what was published. Setting it to `acs_b25032` uses the
-corrected lookup instead — that path needs a Census API key and will **not**
-reproduce the paper. `tests/test_acs_lookup.py` pins both the defect and the
-fix, offline.
-
-The consequence is visible in the output: the charging budget binds in exactly
-one of fifteen scenario/range combinations (`Low` at 50 miles, 62.61%). Every
-other combination returns the uncapped base case unchanged.
+This is reproduced faithfully rather than silently corrected. `config/base.yaml` sets
+`charging.weights_source: published_fallback`, so `run_all.py` regenerates what was published.
+Setting it to `acs_b25032` uses the corrected lookup instead. That path needs a Census API key
+(`CENSUS_API_KEY`) and will **not** reproduce the paper. `tests/test_acs_lookup.py` pins both the
+defect and the fix, offline.
 
 ## Stated residuals
 
