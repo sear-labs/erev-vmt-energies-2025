@@ -80,8 +80,8 @@ charging:
   # The default is published_fallback so that `run_all.py` reproduces the
   # paper. This is not an endorsement of it: the notebook's ACS lookup matched
   # zero variables and fell through to a hardcoded vector while only emitting a
-  # warning. See README, "Known defect: the scenario weights are a hardcoded
-  # fallback", and tests/test_acs_lookup.py, which pins the cause.
+  # warning. See README, "Scenario weights", and tests/test_acs_lookup.py,
+  # which pins the cause.
   weights_source: published_fallback
 
   # The hardcoded vector the published run fell back to. Reproduced verbatim

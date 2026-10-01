@@ -52,7 +52,7 @@ it a reimplementation; it takes the journal-and-year suffix and stays A.
 the notebook was written to do (weight households from Census ACS B25032); it is
 what it actually did, because its ACS lookup matched zero variables and fell
 through to a hardcoded vector. The paper itself never says how the weights were set.
-See README, "Known defect". Changing the default silently changes published
+See README, "Scenario weights". Changing the default silently changes published
 scenario numbers.
 
 ## Conventions local to here

@@ -13,8 +13,8 @@ labels, for three independent reasons, so the lookup returned an empty list and
 the notebook fell through to a hardcoded weight vector with only a warning.
 
 The first test below shows the predicate failing. The second shows the
-replacement working. Together they are the evidence for the README's "Known
-defect" section, and they make the regression impossible to reintroduce.
+replacement working. Together they are the evidence for the README's "Scenario
+weights" section, and they make the regression impossible to reintroduce.
 """
 
 from __future__ import annotations
