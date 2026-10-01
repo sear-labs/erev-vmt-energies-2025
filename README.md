@@ -111,39 +111,30 @@ Against the usual rule that generated files stay out of git:
   evidence of what produced the published numbers. It is frozen: not
   maintained, not refactored, not bug-fixed. Corrections go in `src/`.
 
-## Known defect: the paper's ACS weights are a fallback
+## Scenario weights
 
-**The scenario weights described in the paper were never computed.** The
-notebook selected Census B25032 variables with
+The paper's numbers reproduce exactly. This note is about what the code could do but doesn't.
 
-```python
-if side in lab and pattern in lab and ("!!Estimate" in lab)
-```
+- **The *Normal*, *Low* and *More* scenarios weight households by how they can charge:** garage,
+  driveway, work or weekly public charging.
+- **Those weights are fixed: 45%, 25%, 20%, 10%.** The notebook tried to take them from Census table
+  B25032 (housing tenure by units in structure), but its lookup matched no variables, so it used
+  the fixed values.
+- **The paper is consistent with this.** Section 3.4 doesn't say where the weights came from.
+- **They change only 1 of 15 results:** *Low* at a 50-mile range (62.61% electric). The rest are
+  uncapped and don't use the weights.
+- **Census weights are available** with a free Census API key: set `CENSUS_API_KEY`, run
+  `scripts/fetch_sources.py`, and set `charging.weights_source: acs_b25032` in `config/base.yaml`.
+  This hasn't been run, so how much the *Low* 50-mile result would change is unknown. It will not
+  reproduce the paper.
 
-where `side` was `"Owner occupied"` and `pattern` was e.g. `"2 apartments"`.
-Measured against the live API on 2026-09-10, that predicate matches **zero of
-23 variables**, for three independent reasons:
+Why the notebook's lookup matched nothing (pinned in `tests/test_acs_lookup.py`):
 
-| looked for | actually is |
+| it looked for | the Census label is |
 |---|---|
-| `Owner occupied` | `Owner-occupied housing units` (hyphenated) |
-| `!!Estimate` | label *starts* `Estimate!!` — the substring never occurs |
+| `Owner occupied` | `Owner-occupied housing units` |
+| `!!Estimate` anywhere | `Estimate!!` at the start |
 | `2 apartments`, `3 or 4 apartments` | `2`, `3 or 4` |
-
-With no matches the notebook hit its fallback, emitted a `warnings.warn`, and
-returned a hardcoded `{garage: .45, driveway: .25, work: .20, weekly: .10}`.
-Those are the weights behind every scenario number in the paper.
-
-This is reproduced faithfully rather than silently corrected.
-`config/base.yaml` sets `charging.weights_source: published_fallback`, so
-`run_all.py` regenerates what was published. Setting it to `acs_b25032` uses the
-corrected lookup instead — that path needs a Census API key and will **not**
-reproduce the paper. `tests/test_acs_lookup.py` pins both the defect and the
-fix, offline.
-
-The consequence is visible in the output: the charging budget binds in exactly
-one of fifteen scenario/range combinations (`Low` at 50 miles, 62.61%). Every
-other combination returns the uncapped base case unchanged.
 
 ## Stated residuals
 

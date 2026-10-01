@@ -213,7 +213,7 @@ def fetch_acs_units(api_key: str | None = None) -> dict[str, float]:
             "CENSUS_API_KEY in your environment or put it in a .env file "
             "(gitignored). Note that the paper's published numbers do NOT need "
             "this: config/base.yaml uses charging.weights_source=published_fallback, "
-            "which requires no ACS call. See README, 'Known defect'."
+            "which requires no ACS call. See README, 'Scenario weights'."
         )
     params = {"get": "NAME," + ",".join(names), "for": "us:1", "key": api_key}
     data = _get_json(ACS_DATA_URL, params)

@@ -48,10 +48,11 @@ it a reimplementation; it takes the journal-and-year suffix and stays A.
 
 ## The one thing to know before changing anything
 
-`charging.weights_source` defaults to `published_fallback`. That is **not** the
-method the paper describes - it is what the paper's code actually did, because
-its ACS lookup matched zero variables and fell through to a hardcoded vector.
-See README, "Known defect". Changing the default silently changes published
+`charging.weights_source` defaults to `published_fallback`. That is **not** what
+the notebook was written to do (weight households from Census ACS B25032); it is
+what it actually did, because its ACS lookup matched zero variables and fell
+through to a hardcoded vector. The paper itself never says how the weights were set.
+See README, "Scenario weights". Changing the default silently changes published
 scenario numbers.
 
 ## Conventions local to here
