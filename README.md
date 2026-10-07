@@ -111,9 +111,26 @@ Against the usual rule that generated files stay out of git:
   evidence of what produced the published numbers. It is frozen: not
   maintained, not refactored, not bug-fixed. Corrections go in `src/`.
 
+## What reproduces, and what doesn't
+
+- **Reproduces:** Tables 1–3 (trips and VMT by distance bin, the FHWA monthly fit, the EV/gas split at
+  a 50-mile range) and the VMT split behind them.
+- **Doesn't reproduce: Tables 4–6 and Figures 2–13.** Those use the paper's *Worst*, *Average* and
+  *Best* scenarios (EV efficiency, battery cost, electricity and gas prices) and its 7-, 5-, 3- and
+  2-day weekly charging frequencies. This repository has neither. Its charging scenarios are named
+  *Normal*, *Low* and *More*, which the paper doesn't use.
+- **The six figures in `results/figures/`** plot this code's scenarios. They aren't matched to the
+  paper's figures.
+- **Where the rest probably lives:** a Fall 2025 notebook and workbook
+  (`EV_Graphs_Updated_Finalist.ipynb`, `Calculations Check_final.xlsx`) in the students'
+  `searlabtransfer` GitHub organization. Neither is in this repository yet.
+
+*Corrected 2026-10-06. The 2026-10-01 README said "the paper's numbers reproduce exactly"; that was
+true of Tables 1–3 only, checked against the published article.*
+
 ## Scenario weights
 
-The paper's numbers reproduce exactly. This note is about what the code could do but doesn't.
+This note is about what the code could do but doesn't.
 
 - **The *Normal*, *Low* and *More* scenarios weight households by how they can charge:** garage,
   driveway, work or weekly public charging.
