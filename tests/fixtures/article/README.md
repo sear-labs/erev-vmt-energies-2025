@@ -15,3 +15,10 @@ Two changes from the page:
 - Bin labels use an ASCII hyphen (`0-1`), not the page's en-dash, because the label is
   a join key (see CLAUDE.md).
 - Table 2's month names are written as numbers 1–12.
+
+`figure4_measured.csv` holds six values read from the published Figure 4 image
+(`energies-18-06448-g004.png`, 3228 x 2761 px), 2026-10-07. Each panel's y axis
+spans 200 miles over 520.5 px, so one pixel is 0.38 miles. Each value is read
+from the image's pixels: the midpoint of a bar's black top edge, or the centre
+of a battery dot. The values were not estimated by eye. One is a calibration
+check: a full battery reads 150.24 against a true 150.

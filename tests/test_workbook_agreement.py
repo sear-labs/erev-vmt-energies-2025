@@ -30,7 +30,7 @@ from pathlib import Path
 import openpyxl
 import pytest
 
-from erev_vmtalloc import costs
+from erev_vmtalloc import costs, report
 
 ROOT = Path(__file__).resolve().parents[1]
 WORKBOOK = ROOT / "notebooks" / "fall-2025" / "Calculations Check_final.xlsx"
@@ -162,3 +162,30 @@ def test_raw_charging_extract_is_the_workbook(workbook):
         assert not (isinstance(cell, str) and cell.startswith("=")), "D column became a formula"
         assert row["gas_vmt_billion"] == cell, (i + 2, row["gas_vmt_billion"], cell)
         assert row["charges_per_week"] == sheet[f"A{i + 2}"].value
+
+
+def test_weekly_trips_per_household_is_the_workbook_column(fitted, config, workbook):
+    """Figure 4's input, derived (December trips / 128 M drivers, x 12 / 52.14 weeks),
+    equals the workbook's typed 'Trip Bin Distance'!I2:I11 exactly, and the per-driver
+    step equals its typed F2:F11 exactly."""
+    sheet = workbook["Trip Bin Distance"]
+    ours = costs.weekly_trips_per_household(fitted, config)
+    assert list(ours) == [sheet[f"I{r}"].value for r in range(2, 12)]
+    # The per-driver step, forward: December's printed trips x 1000 / 128 M drivers.
+    wp = config["paper_scenarios"]["weekly_profile"]
+    december = report.month_table(fitted, int(wp["month"]))["Trips (B/month)"]
+    per_driver = [round(v * 1000 / float(wp["drivers_millions"]), 4) for v in december]
+    assert per_driver == [sheet[f"F{r}"].value for r in range(2, 12)]
+
+
+def test_regenerated_charging_gas_equals_the_pasted_constants(chg):
+    """The recovered rule reproduces all 18 typed 5-, 3- and 2-day gas VMT values."""
+    pasted = costs.load_charging_gas_vmt(RAW, "charging_gas_vmt_2023.csv")
+    worst = 0.0
+    for row in pasted[pasted.charges_per_week != 7].itertuples():
+        ours = chg[(chg["Charges / week"] == row.charges_per_week)
+                   & (chg["Vehicle Type"] == costs.ldv_label(row.electric_range_mi))]
+        gap = abs(float(ours["Gas VMT (B)"].iloc[0]) - row.gas_vmt_billion) / row.gas_vmt_billion
+        worst = max(worst, gap)
+    print(f"18 regenerated values, worst rel gap {worst:.1e}")
+    assert worst < CHARGING_REL_TOL

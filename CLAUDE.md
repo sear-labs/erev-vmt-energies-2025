@@ -75,6 +75,12 @@ miles, not the tables' 3,262.8 B, and that default reproduces them. Likewise
 published defects, kept on purpose; see README, "What reproduces, and what
 doesn't".
 
+Two inputs that the frozen evidence holds only as typed constants are regenerated
+from recovered rules: `paper_scenarios.charging.missed_charge_loss` (the 5-, 3- and
+2-a-week charging inputs) and `paper_scenarios.weekly_profile` (Figure 4). The rules
+were fitted to the published numbers. Their parameters are findings, not choices,
+and changing one changes published figures.
+
 ## Conventions local to here
 
 - Bin labels use an ASCII hyphen (`"0-1"`), never an en-dash. The label is a

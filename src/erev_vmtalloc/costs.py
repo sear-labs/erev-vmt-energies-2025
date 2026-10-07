@@ -28,7 +28,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-from .allocation import FittedVmt, split_vmt
+from .allocation import FittedVmt, ev_ratio_per_bin, split_vmt
 
 ICE = "ICE"
 EV = "EV"
@@ -210,12 +210,29 @@ def charging_total_vmt_b(fitted: FittedVmt, config) -> float:
                      f"'normalized', got {basis!r}")
 
 
+def short_trip_electric_vmt_b(fitted: FittedVmt, electric_range: float, config) -> float:
+    """Electric VMT at one range from trips under 100 miles, FHWA-normalised, billions.
+
+    The bins in `paper_scenarios.charging.long_trip_bins` are excluded: Section 4.6
+    has drivers charge before a long trip, so charging frequency does not touch it.
+    """
+    long_bins = set(config["paper_scenarios"]["charging"]["long_trip_bins"])
+    unknown = long_bins - set(fitted.bins)
+    if unknown:
+        raise ValueError(f"long_trip_bins names bins the fit does not have: {sorted(unknown)}")
+    short = np.array([b not in long_bins for b in fitted.bins])
+    ratio = ev_ratio_per_bin(electric_range, fitted.mean_distance, round_trip=config.round_trip)
+    return float((fitted.annual_vmt_billion_per_bin * ratio)[short].sum())
+
+
 def charging_table(fitted: FittedVmt, config, raw_dir: Path) -> pd.DataFrame:
     """'Calcs by Charge' rows 2-25: the charging-frequency figures.
 
     Seven charges a week is the base-case split's gas share applied to the chosen VMT
-    total. Five, three and two are the pasted constants, which stand on Table 1's
-    printed total; under `vmt_basis: normalized` they are scaled to the FHWA total.
+    total. Five, three and two add a fixed share of short-trip electric VMT to that,
+    as gas (config `missed_charge_loss`): the rule recovered for the workbook's typed
+    constants, which it reproduces to within 3.4e-6. `gas_source: pasted` reads those
+    constants instead. Both stand on the chosen VMT total.
 
     CO2 and operating-cost savings are measured against the Average scenario's ICE
     row in `scenario_table`, exactly as the workbook does. Under the default basis
@@ -227,15 +244,28 @@ def charging_table(fitted: FittedVmt, config, raw_dir: Path) -> pd.DataFrame:
     params = paper["scenarios"][charging["scenario"]]
     total = charging_total_vmt_b(fitted, config)
     pasted_basis = table1_printed_total_b(fitted)
-    pasted = load_charging_gas_vmt(raw_dir, charging["gas_vmt_file"])
+    source = charging.get("gas_source", "regenerated")
+    if source not in ("regenerated", "pasted"):
+        raise ValueError(f"paper_scenarios.charging.gas_source must be 'regenerated' or "
+                         f"'pasted', got {source!r}")
+    pasted = (load_charging_gas_vmt(raw_dir, charging["gas_vmt_file"])
+              if source == "pasted" else None)
+    loss = {int(k): float(v) for k, v in charging["missed_charge_loss"].items()}
+    scale = total / fitted.annual_vmt_billion
     ranges = [float(r) for r in paper["ranges"]]
 
     rows = []
     for cpw in charging["frequencies"]:
         for r in ranges:
+            split = split_vmt(fitted, r, round_trip=config.round_trip)
+            seven = total * split.gas_billion / (split.ev_billion + split.gas_billion)
             if int(cpw) == 7:
-                split = split_vmt(fitted, r, round_trip=config.round_trip)
-                gas = total * split.gas_billion / (split.ev_billion + split.gas_billion)
+                gas = seven
+            elif source == "regenerated":
+                if int(cpw) not in loss:
+                    raise ValueError(f"missed_charge_loss has no share for {cpw} charges/week")
+                short = short_trip_electric_vmt_b(fitted, r, config) * scale
+                gas = seven + loss[int(cpw)] * short
             else:
                 match = pasted[
                     (pasted["charges_per_week"] == int(cpw))
@@ -336,4 +366,105 @@ def figure_data(scen: pd.DataFrame, chg: pd.DataFrame, config) -> pd.DataFrame:
     add(7, "EV grid CO2 (Bt)", ["EV"],
         [total / float(params["mi_per_kwh"]) * float(params["grid_g_per_kwh"]) / 1e6])
 
+    return pd.DataFrame(out)
+
+
+# ---------------------------------------------------------------------------
+# Figure 4: one household's week
+# ---------------------------------------------------------------------------
+
+DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+
+
+def weekly_trips_per_household(fitted: FittedVmt, config) -> np.ndarray:
+    """Trips per household per week, by bin: the workbook's 'Trip Bin Distance'!I column.
+
+    Derived as the workbook did, rounding included (config `weekly_profile`): Table 1's
+    December trips as printed, per driver per month, then per week.
+    """
+    from .report import month_table
+
+    wp = config["paper_scenarios"]["weekly_profile"]
+    month = month_table(fitted, int(wp["month"]))["Trips (B/month)"].to_numpy(float)
+    per_driver_month = np.round(month * 1000 / float(wp["drivers_millions"]), 4)
+    return np.round(per_driver_month * 12 / float(wp["weeks_per_year"]), 4)
+
+
+def weekly_profile(fitted: FittedVmt, config) -> np.ndarray:
+    """Miles driven each day, Monday to Sunday, by the household Figure 4 follows."""
+    wp = config["paper_scenarios"]["weekly_profile"]
+    trips = weekly_trips_per_household(fitted, config)
+    weekly_miles = float((trips * fitted.mean_distance).sum())
+    weights = np.asarray(wp["day_weights"], float)
+    if weights.shape != (7,):
+        raise ValueError("weekly_profile.day_weights needs seven values, Monday to Sunday")
+    return weights / weights.sum() * weekly_miles
+
+
+def simulate_week(electric_range: float, daily_miles, charge_nights) -> pd.DataFrame:
+    """One week under the published notebook's rule: drive on battery while it lasts,
+    then on gas; recharge to full at the end of each charge night. Monday starts full."""
+    nights = {int(n) for n in charge_nights}
+    soc = float(electric_range)
+    rows = []
+    for i, need in enumerate(np.asarray(daily_miles, float)):
+        start = soc
+        ev = min(soc, need)
+        soc = max(0.0, soc - ev)
+        if i in nights:
+            soc = float(electric_range)
+        rows.append({"day": DAYS[i], "miles": need, "ev_miles": ev, "gas_miles": need - ev,
+                     "soc_start": start})
+    return pd.DataFrame(rows)
+
+
+def figure4_data(fitted: FittedVmt, config) -> pd.DataFrame:
+    """Every panel of Figure 4 (charges per week x range): each day's EV and gas miles
+    and start-of-day battery range, in the long format `figure_data` uses."""
+    wp = config["paper_scenarios"]["weekly_profile"]
+    daily = weekly_profile(fitted, config)
+    out = []
+    for cpw, nights in wp["charge_nights"].items():
+        for r in wp["ranges"]:
+            week = simulate_week(float(r), daily, nights)
+            for col, name in (("ev_miles", "EV miles"), ("gas_miles", "gas miles"),
+                              ("soc_start", "start-of-day range")):
+                for day, v in zip(week["day"], week[col], strict=True):
+                    out.append({"figure": 4, "series": f"{int(cpw)}/week R={int(r)} {name}",
+                                "x": day, "y": float(v)})
+    return pd.DataFrame(out)
+
+
+# ---------------------------------------------------------------------------
+# Figure 1: emissions and VMT by transport subsector, 2022
+# ---------------------------------------------------------------------------
+
+FIGURE1_ORDER = ["LDV", "EREV 100 mi (nat. avgs.)", "Combination Truck",
+                 "Non Transport Vehicles", "SU Truck", "Aircraft", "Pipeline", "Watercraft",
+                 "Rail", "Buses"]
+
+
+def figure1_data(scen: pd.DataFrame, fitted: FittedVmt, raw_dir: Path) -> pd.DataFrame:
+    """Figure 1's bars (CO2, billion t) and dots (VMT, trillion miles), in plotted order.
+
+    Road modes' CO2 is vehicles x miles / mpg x kg per gallon, as the Copy workbook's
+    'Rough1' sheet computes it; other modes' CO2 is typed there. The EREV bar is the
+    Average scenario's 100-mile total emissions (Table 5). The dots are the VMT values
+    typed in the figure's cell, five of them placeholders (see the input's sidecar),
+    except LDV and EREV, which the cell sets to the total VMT.
+    """
+    rows = pd.read_csv(Path(raw_dir) / "transport_subsectors_2022.csv").set_index("figure_label")
+    road = rows["vehicles"].notna()
+    co2_mt = rows["emissions_mt"].copy()
+    co2_mt[road] = (rows.loc[road, "vehicles"] * rows.loc[road, "miles_per_vehicle"] / 1e9
+                    / rows.loc[road, "mpg"] * rows.loc[road, "kg_co2_per_gal"])
+    vmt_t = rows["fhwa_vmt_million"] / 1e6
+    erev = scen[(scen["Scenario"] == "Average")
+                & (scen["Vehicle Type"] == ldv_label(100))]["Total Emissions (Mt CO2)"]
+    co2_mt["EREV 100 mi (nat. avgs.)"] = float(erev.iloc[0])
+    vmt_t["LDV"] = vmt_t["EREV 100 mi (nat. avgs.)"] = fitted.annual_vmt_billion / 1000
+    out = []
+    for label in FIGURE1_ORDER:
+        out.append({"figure": 1, "series": "CO2 (Bt)", "x": label, "y": co2_mt[label] / 1000})
+        out.append({"figure": 1, "series": "VMT (T)", "x": label, "y": float(vmt_t[label])})
     return pd.DataFrame(out)

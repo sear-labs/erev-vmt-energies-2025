@@ -258,11 +258,29 @@ def test_daily_charging_runs_four_percent_above_the_average_scenario(fitted, sce
     assert 0.039 < excess < 0.040
 
 
-def test_up_to_75_percent_loss_is_not_in_the_workbook(chg):
+def test_up_to_75_percent_loss_does_not_regenerate(fitted, config, chg):
     """Conclusions: charging fewer than five times a week "can lose up to 75% of
-    potential electrified miles". The largest loss the workbook computes, two charges
-    a week against seven, is 39%."""
+    potential electrified miles".
+
+    Two models in the paper compute that loss, and neither reaches 75%. Nationally
+    (the charging-frequency figures), the largest loss, two charges a week against
+    seven at 25 miles, is 39%. In Figure 4's weekly simulation, with the recovered
+    profile, it is 57%. A search of every charging quantity found 75% only in things
+    that are not lost electric miles: gas use rising 75% (5 a week, 125 miles), and
+    CAPEX per ton rising 74% (2 a week, 25 miles). Pinned as not regenerating.
+    """
     ev = chg.pivot(index="Vehicle Type", columns="Charges / week", values="Electric VMT (B)")
-    worst_loss = float((1 - ev[[3, 2]].min(axis=1) / ev[7]).max())
-    print(f"largest loss below five charges a week: {100 * worst_loss:.1f}%")
-    assert 0.35 < worst_loss < 0.45
+    national = float((1 - ev[[3, 2]].min(axis=1) / ev[7]).max())
+
+    wp = config["paper_scenarios"]["weekly_profile"]
+    daily = costs.weekly_profile(fitted, config)
+    weekly = 0.0
+    for r in wp["ranges"]:
+        full = costs.simulate_week(r, daily, wp["charge_nights"][7])["ev_miles"].sum()
+        for cpw in (3, 2):
+            got = costs.simulate_week(r, daily, wp["charge_nights"][cpw])["ev_miles"].sum()
+            weekly = max(weekly, 1 - got / full)
+    print(f"largest loss below five charges a week: national {100 * national:.1f}%, "
+          f"Figure 4's weekly simulation {100 * weekly:.1f}%")
+    assert 0.35 < national < 0.45
+    assert 0.50 < weekly < 0.60

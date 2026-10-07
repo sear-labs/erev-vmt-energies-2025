@@ -157,6 +157,13 @@ def main() -> int:
     report.write_csv(chg, tables_dir / "charging_frequency.csv")
     figdata = costs.figure_data(scen, chg, config)
     report.write_csv(figdata, tables_dir / "figure_data.csv")
+    fig1 = costs.figure1_data(scen, fitted, raw_dir)
+    report.write_csv(fig1, tables_dir / "figure1_data.csv")
+    fig4 = costs.figure4_data(fitted, config)
+    report.write_csv(fig4, tables_dir / "figure4_data.csv")
+    daily = costs.weekly_profile(fitted, config)
+    print(f"Figure 4 weekly profile: {daily[0]:.2f} mi each weekday, {daily[5]:.2f} each "
+          f"weekend day (recovered; see config weekly_profile)")
 
     print("\nTables 5-6, Average scenario (Worst/Best in tables5_6_scenarios.csv):")
     for _, row in scen[scen["Scenario"] == "Average"].iterrows():
@@ -169,6 +176,7 @@ def main() -> int:
     # --- Figures -----------------------------------------------------------
     written = report.write_figures(summary, figures_dir)
     written += report.write_paper_figures(figdata, figures_dir)
+    written += [report.write_figure1(fig1, figures_dir), report.write_figure4(fig4, figures_dir)]
     print(f"\nWrote {len(list(tables_dir.glob('*.csv')))} tables to {tables_dir}")
     print(f"Wrote {len(written)} figures to {figures_dir}")
     return 0

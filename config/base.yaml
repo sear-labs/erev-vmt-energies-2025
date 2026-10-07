@@ -201,7 +201,53 @@ paper_scenarios:
     # The published figures mix the two: their CO2 and cost savings subtract an
     # emissions total on the 3,392.5 B base from an ICE baseline on the 3,262.8 B
     # base. The default reproduces the paper; `normalized` gives the consistent
-    # version, scaling the pasted 5-, 3- and 2-day gas VMT by 3,262.8 / 3,392.5.
+    # version.
     vmt_basis: table1_printed
-    # 5-, 3- and 2-day gas VMT: pasted constants with no surviving generator.
+
+    # Gas VMT at 5, 3 and 2 charges a week.
+    #
+    # The workbook holds these as typed constants with no surviving generator. The
+    # rule that produces all 18 of them (to within 3.4e-6, recovered 2026-10-07):
+    #
+    #   gas(k/week, R) = gas(7/week, R) + loss[k] * electric VMT at range R from
+    #                    trips under 100 miles
+    #
+    # Charging less often loses a fixed share of short-trip electric miles. Trips of
+    # 100 miles or more are unaffected, matching Section 4.6's "drivers ... would
+    # charge before" a long trip. The three shares are the rule's only free
+    # parameters; they were recovered from the published numbers, and no derivation
+    # of them survives.
+    #
+    #   regenerated  apply the rule (default; it reproduces the paper)
+    #   pasted       read the workbook's constants from `gas_vmt_file` instead
+    gas_source: regenerated
+    missed_charge_loss: {5: 0.15, 3: 0.30, 2: 0.40}
+    long_trip_bins: ["100-250", "250-500", "500+"]
     gas_vmt_file: charging_gas_vmt_2023.csv
+
+  # Figure 4: one household's week, day by day, at each range and charging pattern.
+  #
+  # The published notebook cell takes its weekly trips from variables it never
+  # defines, so on its own it draws a hardcoded toy week. The inputs the published
+  # figure used were recovered 2026-10-07, and each step reproduces a workbook column
+  # exactly ('Trip Bin Distance' sheet):
+  #
+  #   trips per driver per month (F) = Table 1's December trips, as printed in
+  #                                    billions to 3 dp, x 1000 / drivers_millions,
+  #                                    to 4 dp
+  #   trips per household per week (I) = F x 12 / weeks_per_year, to 4 dp
+  #   weekly miles = sum over ALL ten bins of I x fitted bin distance
+  #   day d's miles = weekly miles x day_weights[d] / sum(day_weights)
+  #
+  # That gives 71.6 miles each weekday and 76.7 each weekend day. The published
+  # image measures 71.7 and 76.3, within its 0.4-mile pixel. Note "all ten bins":
+  # Section 4.6 says trips over 100 miles were left out of the weekly profile, but
+  # the published figure includes them; without them, weekdays would be 54.5 miles.
+  weekly_profile:
+    month: 12
+    drivers_millions: 128.0
+    weeks_per_year: 52.14
+    day_weights: [0.14, 0.14, 0.14, 0.14, 0.14, 0.15, 0.15]   # Mon..Sun
+    # Nights a battery is charged, 0 = Monday. Monday starts full.
+    charge_nights: {7: [0, 1, 2, 3, 4, 5, 6], 5: [0, 1, 2, 3, 4], 3: [0, 2, 4], 2: [1, 4]}
+    ranges: [50, 75, 100, 150]

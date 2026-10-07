@@ -2,21 +2,22 @@
 # This file is an INPUT (Part 1 rule 4): it is never edited by an analysis stage.
 #
 # It is NOT fetched from an outside service. It is copied, value for value, from the
-# frozen Fall 2025 workbook, because the paper's charging-frequency results (Figures 5,
-# 7, 9, 11 and 13) depend on it and nothing that generated it survives. Its 5-, 3- and
-# 2-day rows are pasted constants in that workbook, and no notebook, script or sheet in
-# the workbook, the shared drive or searlabtransfer/EV-Analysis computes them. They can
-# be used, and everything downstream of them checked, but they cannot themselves be
-# checked. See README, "What reproduces, and what doesn't".
+# frozen Fall 2025 workbook. The paper's charging-frequency results (Figures 5, 7, 9, 11
+# and 13) used it, and nothing that generated it survives: its 5-, 3- and 2-day rows are
+# typed constants, computed by no notebook, script or sheet in the workbook, on the
+# shared drive or in searlabtransfer/EV-Analysis.
 #
-# The 7-day rows are kept for completeness. The package does not read them: it computes
-# the 7-day case itself, and tests/test_workbook_agreement.py asserts that its result
-# equals these rows.
+# Updated 2026-10-07: a rule reproducing all 18 typed values to within 3.4e-6 was
+# recovered (config paper_scenarios.charging.missed_charge_loss), and the package now
+# uses it. This file is kept as the record of what the workbook typed, and
+# tests/test_workbook_agreement.py checks the rule against it. Setting
+# `gas_source: pasted` makes the package read it instead. The 7-day rows are kept for
+# completeness; the package always computes that case itself.
 source: "notebooks/fall-2025/Calculations Check_final.xlsx, sheet 'Calcs by Charge', cells A2:D25"
 description: >-
   Annual US light-duty gas VMT (billions of miles) for an EREV of the given electric
   range that charges the given number of nights per week, on the un-normalised
   3,392.497 B annual VMT total.
 extracted_utc: 2026-10-07
-generator: none surviving (pasted constants in the workbook)
+generator: none surviving; a rule reproducing it was recovered 2026-10-07 (see above)
 sha256: 72718466126b7cb78d88e75f8be0b5f94a9cb05fe898a42392e85313cde847b9

@@ -33,21 +33,22 @@ recorded span. The notebook was copied byte for byte.
   and the rest a bare filename. A copy with those three paths made relative ran top to
   bottom on a fresh kernel on 2026-10-07: 0 errors, 27 figures, 19 s. That copy was then
   discarded, because the committed file is never re-executed.
-- **Figure 4 does not regenerate from this notebook.** Its cell looks for
+- **Figure 4 does not regenerate from this notebook alone.** Its cell looks for
   `WEEKLY_TRIPS_PER_BIN`, `bins` and `x_opt`, which this notebook never defines, so it
   falls back to a hardcoded week of 35, 40, 30, 45, 25, 70 and 55 miles. Both its stored
-  output and a fresh run draw that week. The published Figure 4 instead shows about 73
-  miles each weekday and 77 each weekend day, made in a kernel that had those variables
-  from somewhere else. That source was not found.
+  output and a fresh run draw that week. The published figure was made in a kernel that
+  had those variables. Their values were recovered on 2026-10-07 (config
+  `paper_scenarios.weekly_profile`): with them supplied, this cell draws the published
+  figure. `scripts/capture_notebook_figures.py` does exactly that, in a temporary copy.
 - **Figure 1's VMT dots for five modes are placeholders.** The cell labels the values
   for rail, watercraft, aircraft, non-transport vehicles and pipelines "placeholders
   (update if you have official values)", and the published figure plots them. At the
   figure's 3.5-trillion scale they sit at or near zero; pipelines shows at 0.02.
-- **The 5-, 3- and 2-day charging inputs have no surviving generator.** The workbook's
-  `Calcs by Charge` sheet takes gas VMT for those frequencies as pasted constants
-  (`D8:D25`). Nothing that produced them exists in this notebook, either workbook, or
-  anywhere else in `searlabtransfer/EV-Analysis`. Everything downstream of them does
-  reproduce; they themselves cannot be checked.
+- **The 5-, 3- and 2-day charging inputs are typed constants** in the workbook's
+  `Calcs by Charge` sheet (`D8:D25`). Nothing that produced them survives here or in
+  `searlabtransfer/EV-Analysis`. A rule that reproduces all 18 was recovered on
+  2026-10-07 (config `paper_scenarios.charging.missed_charge_loss`), and the package
+  uses it.
 
 ## Do not
 

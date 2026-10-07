@@ -14,9 +14,17 @@ package with that file.
 The frozen notebook itself is never opened for writing. Needs the dev extras
 (nbclient, ipykernel). Not run by CI: it records an archived stage's output once, and
 what it records is committed (standard, Part 2, "Archive the producer; commit what it
-produced"). Figures 1 and 4 are not captured. Their numbers are typed into their cells
-rather than computed, and Figure 4's cell does not reproduce the published figure; see
-notebooks/README.md.
+produced"). Figure 1's numbers are typed into its cell (CO2 to three decimals); they
+are recorded too, and the package's are compared with them at that precision.
+
+Figure 4 needs one addition. Its cell reads ``WEEKLY_TRIPS_PER_BIN``, ``bins`` and
+``x_opt``, which the notebook never defines, and without them it draws a hardcoded toy
+week. So, in the temporary copy only, a cell is inserted before it that defines them
+from the recovered rule (config ``paper_scenarios.weekly_profile``; see
+``erev_vmtalloc.costs.weekly_trips_per_household``). The figure is then drawn by the
+notebook's own simulation code. Those Figure 4 rows record what the notebook draws
+from the recovered inputs, which is why tests/test_figures_reproduce.py also checks
+them against measurements of the published image.
 """
 from __future__ import annotations
 
@@ -29,6 +37,10 @@ from pathlib import Path
 import nbformat
 from nbclient import NotebookClient
 
+from erev_vmtalloc import costs, sources
+from erev_vmtalloc.allocation import fit_bin_distances
+from erev_vmtalloc.config import load_config
+
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / "notebooks" / "fall-2025"
 OUT = ROOT / "tests" / "fixtures" / "notebook_figures.csv"
@@ -38,7 +50,7 @@ SCENARIOS = ["Worst", "Average", "Best"]
 FREQUENCIES = [7, 5, 3, 2]
 
 # The published version of each figure: the last cell under its heading.
-PUBLISHED_CELL = {2: 4, 3: 7, 5: 13, 6: 17, 7: 21, 8: 25, 9: 29, 10: 37, 11: 43, 12: 47,
+PUBLISHED_CELL = {1: 2, 2: 4, 3: 7, 4: 9, 5: 13, 6: 17, 7: 21, 8: 25, 9: 29, 10: 37, 11: 43, 12: 47,
                   13: 51}
 
 HOOK = r'''
@@ -52,7 +64,11 @@ def _grab(tag):
                     for c in ax.containers if getattr(c, "patches", None)]
             dots = [[float(y) for _, y in c.get_offsets()] for c in ax.collections
                     if len(c.get_offsets())]
-            out.append({"bars": bars, "dots": dots})
+            lines = [[float(v) for v in ln.get_ydata()] for ln in ax.get_lines()
+                     if len(ln.get_ydata()) == 7]
+            child = [list(map(float, c.get_ylim())) for c in getattr(ax, "child_axes", [])]
+            out.append({"bars": bars, "dots": dots, "lines": lines,
+                        "ylim": list(map(float, ax.get_ylim())), "child_ylims": child})
     if out:
         _CAP.setdefault(str(tag), []).extend(out)
 _show0 = plt.show
@@ -63,10 +79,26 @@ plt.show = _show
 '''
 
 
+def figure4_inputs() -> str:
+    """Source for a cell defining the variables Figure 4's cell looks for."""
+    config = load_config(ROOT / "config" / "base.yaml")
+    raw = ROOT / "data" / "raw"
+    fitted = fit_bin_distances(sources.load_bts_trips(raw, config.year),
+                               sources.load_fhwa_vmt(raw, config.year), config["bin_bounds"],
+                               normalize_to_fhwa=config.normalize_to_fhwa)
+    trips = costs.weekly_trips_per_household(fitted, config)
+    return ("import numpy as np\n"
+            f"bins = {list(fitted.bins)!r}\n"
+            f"x_opt = np.array({[float(v) for v in fitted.mean_distance]!r})\n"
+            f"WEEKLY_TRIPS_PER_BIN = {dict(zip(fitted.bins, map(float, trips), strict=True))!r}\n")
+
+
 def run_instrumented(workdir: Path) -> dict:
     nb = nbformat.read(workdir / "EV_Graphs_Updated_Finalist.ipynb", as_version=4)
     cells = [nbformat.v4.new_code_cell(HOOK)]
     for i, cell in enumerate(nb.cells):
+        if i == PUBLISHED_CELL[4]:
+            cells.append(nbformat.v4.new_code_cell(figure4_inputs()))
         if cell.cell_type == "code":
             cell.source = (f"_CELL = {i}\n" + cell.source.replace("/content/", "")
                            + "\n_grab(_CELL); plt.close('all')\n")
@@ -93,6 +125,28 @@ def map_published(cap: dict) -> list[tuple]:
     for fig, name in ((2, "installed battery (TWh)"), (3, "battery capital cost ($T)")):
         for bar in axes(fig)[0]["bars"]:
             rows += _rows(fig, f"{bar['label']} {name}", RANGES, bar["h"])
+
+    labels = costs.FIGURE1_ORDER
+    ax1 = axes(1)
+    rows += _rows(1, "CO2 (Bt)", labels, ax1[0]["bars"][0]["h"])
+    # The cell draws the VMT dots on the CO2 axis, scaled by (max CO2) / (max VMT), and
+    # labels them with a secondary axis. Undo the scaling with the two axes' own
+    # limits: the secondary axis's top is the CO2 axis's top in VMT units.
+    host = next(a for a in ax1 if a["dots"])
+    (sec_top,) = {c[1] for c in host["child_ylims"]}
+    to_vmt = sec_top / host["ylim"][1]
+    rows += _rows(1, "VMT (T)", labels, [v * to_vmt for v in host["dots"][0]])
+
+    # Figure 4: the cell draws two 4x4 grids; the second is the published one.
+    days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+    grid = axes(4)[-16:]
+    for i, cpw in enumerate(FREQUENCIES):
+        for j, r in enumerate([50, 75, 100, 150]):
+            ax = grid[i * 4 + j]
+            assert len(ax["bars"]) == 2 and len(ax["lines"]) == 1, (cpw, r, ax)
+            rows += _rows(4, f"{cpw}/week R={r} EV miles", days, ax["bars"][0]["h"])
+            rows += _rows(4, f"{cpw}/week R={r} gas miles", days, ax["bars"][1]["h"])
+            rows += _rows(4, f"{cpw}/week R={r} start-of-day range", days, ax["lines"][0])
 
     bars = axes(5)[0]["bars"]
     for k, cpw in enumerate(FREQUENCIES):

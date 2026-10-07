@@ -1,0 +1,10 @@
+figure_label,vehicles,miles_per_vehicle,mpg,kg_co2_per_gal,emissions_mt,fhwa_vmt_million,vmt_is_placeholder
+LDV,257741217,10952,22.8,8.888,,2822664,false
+Combination Truck,3239716,60205,6.9,10.18,,195049,false
+Non Transport Vehicles,,,,,219.3,2000,true
+SU Truck,11049522,12328,7.9,10.18,,136224,false
+Aircraft,,,,,170.4,3000,true
+Pipeline,,,,,69.3,20000,true
+Watercraft,,,,,49.9,5000,true
+Rail,,,,,32.5,10000,true
+Buses,958055,19300,7.4,10.18,,18490,false

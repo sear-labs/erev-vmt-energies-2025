@@ -277,6 +277,77 @@ def write_paper_figures(figdata: pd.DataFrame, fig_dir: Path) -> list[Path]:
     return written
 
 
+def write_figure1(fig1: pd.DataFrame, fig_dir: Path) -> Path:
+    """Figure 1 from costs.figure1_data: CO2 bars, VMT dots on a second axis."""
+    fig_dir.mkdir(parents=True, exist_ok=True)
+    co2 = fig1[fig1.series == "CO2 (Bt)"].set_index("x")["y"]
+    vmt = fig1[fig1.series == "VMT (T)"].set_index("x")["y"].reindex(co2.index)
+    xs = np.arange(len(co2))
+    fig, ax = plt.subplots(figsize=(11, 5.5))
+    ax.bar(xs, co2.to_numpy(), 0.6, color="#9ecae1", edgecolor="black", label="CO2 (bars)")
+    ax.set_ylabel("CO2 (billion t, 2022)")
+    twin = ax.twinx()
+    twin.plot(xs, vmt.to_numpy(), "ko", label="VMT (dots, right axis)")
+    twin.set_ylabel("VMT (trillion miles)")
+    twin.set_ylim(bottom=0)
+    ax.set_xticks(xs, list(co2.index), rotation=20, ha="right")
+    ax.set_title("Figure 1. Emissions and VMT by transport mode (2022)\n"
+                 "rail, watercraft, aircraft, non-transport and pipeline VMT are the "
+                 "published placeholders")
+    handles = ax.get_legend_handles_labels()[0] + twin.get_legend_handles_labels()[0]
+    fig.legend(handles, [h.get_label() for h in handles], loc="lower center", ncols=2,
+               fontsize=8)
+    fig.tight_layout(rect=(0, 0.07, 1, 1))
+    path = fig_dir / "fig01.png"
+    fig.savefig(path, dpi=200)
+    plt.close(fig)
+    return path
+
+
+def write_figure4(fig4: pd.DataFrame, fig_dir: Path) -> Path:
+    """Figure 4 from costs.figure4_data: a grid of one household's week, rows by charges
+    per week and columns by range. Bars are each day's EV (blue) and gas (grey, hatched)
+    miles; dots are the battery range at the start of the day."""
+    fig_dir.mkdir(parents=True, exist_ok=True)
+    keys = fig4.series.str.extract(r"^(\d+)/week R=(\d+) (.*)$")
+    fig4 = fig4.assign(cpw=keys[0].astype(int), r=keys[1].astype(int), what=keys[2])
+    cpws = list(dict.fromkeys(fig4.cpw))
+    ranges = list(dict.fromkeys(fig4.r))
+    days = list(dict.fromkeys(fig4.x))
+    xs = np.arange(len(days))
+    fig, axes = plt.subplots(len(cpws), len(ranges), figsize=(16, 13), sharex=True,
+                             sharey=True)
+    for i, cpw in enumerate(cpws):
+        for j, r in enumerate(ranges):
+            ax = axes[i, j]
+            panel = fig4[(fig4.cpw == cpw) & (fig4.r == r)]
+
+            def get(what, panel=panel):
+                return panel[panel.what == what].set_index("x")["y"].reindex(days).to_numpy()
+
+            ev, gas = get("EV miles"), get("gas miles")
+            ax.bar(xs, ev, 0.75, color="#4c78a8", edgecolor="black", label="EV miles")
+            ax.bar(xs, gas, 0.75, bottom=ev, color="#bdbdbd", hatch="//", edgecolor="black",
+                   label="gas miles")
+            ax.plot(xs, get("start-of-day range"), "ko-", markersize=4,
+                    label="range at start of day")
+            ax.set_ylim(0, 200)
+            if i == 0:
+                ax.set_title(f"EV range = {r} mi")
+            if j == 0:
+                ax.set_ylabel(f"{cpw} charges/week\nmiles")
+            ax.set_xticks(xs, days)
+    handles, labels = axes[0, 0].get_legend_handles_labels()
+    fig.legend(handles, labels, loc="lower center", ncols=3)
+    fig.suptitle("Figure 4. One household's week by EV range and charging frequency\n"
+                 "(weekly profile recovered from the workbook; see config weekly_profile)")
+    fig.tight_layout(rect=(0, 0.04, 1, 0.96))
+    path = fig_dir / "fig04.png"
+    fig.savefig(path, dpi=150)
+    plt.close(fig)
+    return path
+
+
 def write_figures(summary: pd.DataFrame, fig_dir: Path) -> list[Path]:
     """Regenerate every figure from the base-case summary table."""
     fig_dir.mkdir(parents=True, exist_ok=True)

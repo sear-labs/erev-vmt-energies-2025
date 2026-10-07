@@ -1,0 +1,7 @@
+quantity,charges_per_week,range_mi,day,measured,how
+EV miles,7,150,Mon,71.66,bar top: midpoint of its black edge (rows 619-622)
+EV miles,7,150,Sat,76.27,bar top: midpoint of its black edge (rows 607-610)
+start-of-day range,5,150,Sat,150.24,dot centre; calibration check (true value 150)
+start-of-day range,5,150,Sun,74.06,dot centre
+start-of-day range,3,100,Wed,28.71,dot centre
+start-of-day range,3,100,Fri,28.90,dot centre

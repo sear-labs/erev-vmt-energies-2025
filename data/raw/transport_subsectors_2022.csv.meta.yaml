@@ -1,0 +1,27 @@
+# Provenance for transport_subsectors_2022.csv: Figure 1's inputs.
+# This file is an INPUT (Part 1 rule 4): it is never edited by an analysis stage.
+#
+# Copied value for value from two places in the frozen Fall 2025 evidence, because
+# Figure 1 drew from both and neither cites a source:
+#
+#   vehicles, miles_per_vehicle, mpg, kg_co2_per_gal, emissions_mt
+#       notebooks/fall-2025/Calculations Check_final - Copy.xlsx, sheet 'Rough1'
+#       (rows 2-5 and I14-I18). Road modes' CO2 is computed from the first four
+#       columns, as the sheet's formulas do; the other modes' emissions are typed.
+#       The typed totals for aircraft (170.4) and watercraft (49.9) do not equal the
+#       sums of the sheet's own component rows (169.0 and 44.5); the totals are what
+#       the figure used.
+#   fhwa_vmt_million, vmt_is_placeholder
+#       notebooks/fall-2025/EV_Graphs_Updated_Finalist.ipynb, Figure 1's cell
+#       (FHWA_VMT_MILLION). That cell labels the five rows marked true
+#       "placeholders (update if you have official values)", and the published
+#       figure plots them as they are.
+#
+# The EREV bar is not here: it is the Average scenario's 100-mile total emissions,
+# computed by the package (Table 5).
+source: "notebooks/fall-2025/ (workbook 'Rough1' sheet, and Figure 1's notebook cell)"
+description: >-
+  2022 US transport subsectors: vehicle counts, miles, fuel economy and CO2 factors
+  for road modes, typed CO2 for non-road modes, and the VMT values Figure 1 plots.
+extracted_utc: 2026-10-07
+sha256: 15f78f34a238e4fbb64205e959263788eede592f2feade9f64d69caed4d552b4
