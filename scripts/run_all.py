@@ -19,7 +19,7 @@ sys.path.insert(0, str(REPO_ROOT / "src"))
 import numpy as np  # noqa: E402
 import pandas as pd  # noqa: E402
 
-from erev_vmtalloc import metrics, report, scenarios, sources  # noqa: E402
+from erev_vmtalloc import costs, metrics, report, scenarios, sources  # noqa: E402
 from erev_vmtalloc.allocation import fit_bin_distances, split_vmt  # noqa: E402
 from erev_vmtalloc.config import load_config  # noqa: E402
 
@@ -143,8 +143,40 @@ def main() -> int:
         tables_dir / "range_summary_all_scenarios.csv",
     )
 
+    # --- Tables 3, 5-6 and the charging-frequency results -------------------
+    # The Fall 2025 workbook's model (src/erev_vmtalloc/costs.py). Its inputs are this
+    # package's split plus config/base.yaml `paper_scenarios`.
+    paper = config["paper_scenarios"]
+    report.write_csv(
+        report.table3(fitted, 50, paper["households_millions"], round_trip=config.round_trip),
+        tables_dir / "table3_R50.csv",
+    )
+    scen = costs.scenario_table(fitted, config)
+    report.write_csv(scen, tables_dir / "tables5_6_scenarios.csv")
+    chg = costs.charging_table(fitted, config, raw_dir)
+    report.write_csv(chg, tables_dir / "charging_frequency.csv")
+    figdata = costs.figure_data(scen, chg, config)
+    report.write_csv(figdata, tables_dir / "figure_data.csv")
+    fig1 = costs.figure1_data(scen, fitted, raw_dir)
+    report.write_csv(fig1, tables_dir / "figure1_data.csv")
+    fig4 = costs.figure4_data(fitted, config)
+    report.write_csv(fig4, tables_dir / "figure4_data.csv")
+    daily = costs.weekly_profile(fitted, config)
+    print(f"Figure 4 weekly profile: {daily[0]:.2f} mi each weekday, {daily[5]:.2f} each "
+          f"weekend day (recovered; see config weekly_profile)")
+
+    print("\nTables 5-6, Average scenario (Worst/Best in tables5_6_scenarios.csv):")
+    for _, row in scen[scen["Scenario"] == "Average"].iterrows():
+        print(f"  {row['Vehicle Type']:<24} CO2 saved {row['CO2 Saved (Mt CO2)']:7.1f} Mt   "
+              f"battery {row['Installed Battery (TWh)']:5.1f} TWh   "
+              f"OPEX {row['OPEX ($B)']:7.2f} $B")
+    print(f"Charging frequency: on {chg['VMT (B)'].iloc[0]:.3f} B VMT "
+          f"({paper['charging']['vmt_basis']}); the tables use {fitted.annual_vmt_billion:.1f} B")
+
     # --- Figures -----------------------------------------------------------
     written = report.write_figures(summary, figures_dir)
+    written += report.write_paper_figures(figdata, figures_dir)
+    written += [report.write_figure1(fig1, figures_dir), report.write_figure4(fig4, figures_dir)]
     print(f"\nWrote {len(list(tables_dir.glob('*.csv')))} tables to {tables_dir}")
     print(f"Wrote {len(written)} figures to {figures_dir}")
     return 0

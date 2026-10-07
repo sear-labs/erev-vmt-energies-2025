@@ -1,0 +1,92 @@
+{
+  "imported": "2026-10-07",
+  "source": "the authors' published-paper folder for this article: charging-model outputs from the first revision, 2025-11-04 and -05",
+  "files": {
+    "vmt_cf.xlsx": {
+      "original_sha256": "dbd93f241013a37b515c1f5587e7cf10c847387efac3da64aa9030edb65a4653",
+      "members": {
+        "[Content_Types].xml": "6504cbf95a0f19df96c98f46e032720f9ea839ba91e22ce2a0a6dc94e088f03f",
+        "_rels/.rels": "73e5a29f48d5ab979eeda062493bc7e679265c1344ef936978b8becec5549497",
+        "xl/workbook.xml": "01bc1b038d4e9dc96d25a54bc116ecfed970119fbf2dcf42ffff10e0f504238a",
+        "xl/_rels/workbook.xml.rels": "371ca5b9d79477a00c2a6f29d90f2c1ee9f14f96a2f931ca6a5943cffa08d7a9",
+        "xl/worksheets/sheet1.xml": "e5f56b1d918c7aae80a8b928d49ddd7522466efaf0ecda29c672866d40e4a67d",
+        "xl/theme/theme1.xml": "156137ac2d7fae74e0286df47c4d1c75e65d5ef1455ff74c4d46176aef06fe56",
+        "xl/styles.xml": "e23622dcf9d9bd0899e894e5da84e7f900424869688c8244e983a377a0c5e48a",
+        "xl/sharedStrings.xml": "5f7033e9aed042aca7fcd6440cdc4066fc9980a29dbfe662c5bde7edaa832e54",
+        "xl/calcChain.xml": "422ffbdb22a9a67e97a44df67f4e7a97dcf67984c2ba9866f71ab653a41e6b14",
+        "docProps/core.xml": "71bfe91e3dab7d31c999de24ec45df7ead9fda82bd5d737a26848cbf334081f7",
+        "docProps/app.xml": "37c8f61419a4ca8d85d26c99391cef0306ff0a5acb12e9bd7889a6052be9d758"
+      },
+      "edits": {
+        "xl/workbook.xml": {
+          "removed_bytes": [
+            789,
+            1177
+          ],
+          "sha256_before_span": "2f5aeed1f14e8e1071cc5aa21e18c56c35b7466fdc15624b4a4fd6ced10f65b1",
+          "sha256_after_span": "c2e4a01322f5e11f43bb2047baa28e3639852284b45a1fbaf0e7c7ebf288e62f",
+          "removed": "<mc:AlternateContent> wrapping one <x15ac:absPath>"
+        }
+      },
+      "change": "xl/workbook.xml: <mc:AlternateContent> wrapping one <x15ac:absPath> removed",
+      "committed_sha256": "81addf6cbc63ac1ba404ebffb8d5d59bccc7ab1cb99ede60f8ddc468399f5ac6"
+    },
+    "recomputed_vmt_table (1).xlsx": {
+      "original_sha256": "472b335f29d7a19bee47eb1f7b470d8d827c0a5f9dc9b663e3f274e2c6f098f6",
+      "members": {
+        "[Content_Types].xml": "6504cbf95a0f19df96c98f46e032720f9ea839ba91e22ce2a0a6dc94e088f03f",
+        "_rels/.rels": "73e5a29f48d5ab979eeda062493bc7e679265c1344ef936978b8becec5549497",
+        "xl/workbook.xml": "397614c4af379599725c54589c6960dbe2f737857083f73b9c27ec5ae420bb5c",
+        "xl/_rels/workbook.xml.rels": "371ca5b9d79477a00c2a6f29d90f2c1ee9f14f96a2f931ca6a5943cffa08d7a9",
+        "xl/worksheets/sheet1.xml": "0cf850d521bbf65a4071bdd31f87d8b7560ca3e0a8db443ae554bea971f41e9e",
+        "xl/theme/theme1.xml": "0c8f48efbaa9f9470fd12aea56b8b7f992d43343c84808b46a0d1738ca46c7ab",
+        "xl/styles.xml": "42e152ce310d4cdfa923126c2b937be68e6092f54d36caa7b10b203b53a68bea",
+        "xl/sharedStrings.xml": "7e0c308e667f19cf8b31aae58245702b8eb5e29badc645eb47c8c78cd668db4a",
+        "xl/calcChain.xml": "537fa8019a38acb5f11ba4b5b6e98bb609a179b01ebda510d6771aaff5314448",
+        "docProps/core.xml": "fd4a808cb0468d9f86b45e8040fb67b253305374f95ead6a272b1553b725b53b",
+        "docProps/app.xml": "e2da30e08ccdb0530e7d5c1cc864b85e63308cdf115f99da960da93fc219ac87"
+      },
+      "edits": {
+        "xl/workbook.xml": {
+          "removed_bytes": [
+            818,
+            1206
+          ],
+          "sha256_before_span": "48f2a37c114d4d393a5d22fe409efa2782319a0710ec17d9685d2857103d4c7d",
+          "sha256_after_span": "633fef8bf59f7d86b5bbaf7cb742b0323f486d16897286edfbbaff511d6b6eb4",
+          "removed": "<mc:AlternateContent> wrapping one <x15ac:absPath>"
+        }
+      },
+      "change": "xl/workbook.xml: <mc:AlternateContent> wrapping one <x15ac:absPath> removed",
+      "committed_sha256": "5b0b9d241c6273629c0d1c6c8b89e6734a2d21c53848f2502a80d275b70ebf99"
+    },
+    "Charging Frequency Data vNov5.xlsx": {
+      "original_sha256": "bce607e55e53bcd6c60ffbb57a4de0a548c971af2795c2777383e7f29ee32890",
+      "members": {
+        "[Content_Types].xml": "bfa02ea1994b73dca866ea3b6596340fe00063d19eab5957c7d8e6a5fa10599a",
+        "_rels/.rels": "73e5a29f48d5ab979eeda062493bc7e679265c1344ef936978b8becec5549497",
+        "xl/workbook.xml": "de3f4b75bb13ff8efb09cfc6ce8c1e92e8556a375f019063382dd413c48ab25c",
+        "xl/_rels/workbook.xml.rels": "353383fbe90f202be596bdf0a86439c704d7024f4f8c19ebc9d06b42a341dba1",
+        "xl/worksheets/sheet1.xml": "a87e3c7aab834d1911b95e3ee2a8c7e9a22a6016e2a00e632162f480d35d900e",
+        "xl/theme/theme1.xml": "156137ac2d7fae74e0286df47c4d1c75e65d5ef1455ff74c4d46176aef06fe56",
+        "xl/styles.xml": "ba23da5c3baef50b7480fc3dc86ce0fec9f653c9abf61852f8e4de6f252a6533",
+        "xl/sharedStrings.xml": "86732702d4dd16bc1c2d872b68c6bc8ec28fdc26ca465a61442f235d942b6b48",
+        "docProps/core.xml": "179d3eebdc92617be6d51ff05253adc495dc712060581b72a86264a842a23d01",
+        "docProps/app.xml": "37c8f61419a4ca8d85d26c99391cef0306ff0a5acb12e9bd7889a6052be9d758"
+      },
+      "edits": {
+        "xl/workbook.xml": {
+          "removed_bytes": [
+            789,
+            1177
+          ],
+          "sha256_before_span": "2f5aeed1f14e8e1071cc5aa21e18c56c35b7466fdc15624b4a4fd6ced10f65b1",
+          "sha256_after_span": "85a5be5c1dbb62bf5f3ada0484c81c36b8642e0081e7b4f50dfdedb7a01a6056",
+          "removed": "<mc:AlternateContent> wrapping one <x15ac:absPath>"
+        }
+      },
+      "change": "xl/workbook.xml: <mc:AlternateContent> wrapping one <x15ac:absPath> removed",
+      "committed_sha256": "299cef16a12e9805a3d3d3c845e807b0965cccedea7352e804e66fb31b298e6d"
+    }
+  }
+}

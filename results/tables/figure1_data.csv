@@ -1,0 +1,21 @@
+figure,series,x,y
+1,CO2 (Bt),LDV,1.100389680469061
+1,VMT (T),LDV,3.2628000000000004
+1,CO2 (Bt),EREV 100 mi (nat. avgs.),0.44784861667916515
+1,VMT (T),EREV 100 mi (nat. avgs.),3.2628000000000004
+1,CO2 (Bt),Combination Truck,0.28776514436527534
+1,VMT (T),Combination Truck,0.195049
+1,CO2 (Bt),Non Transport Vehicles,0.21930000000000002
+1,VMT (T),Non Transport Vehicles,0.002
+1,CO2 (Bt),SU Truck,0.17553220296947847
+1,VMT (T),SU Truck,0.136224
+1,CO2 (Bt),Aircraft,0.1704
+1,VMT (T),Aircraft,0.003
+1,CO2 (Bt),Pipeline,0.0693
+1,VMT (T),Pipeline,0.02
+1,CO2 (Bt),Watercraft,0.0499
+1,VMT (T),Watercraft,0.005
+1,CO2 (Bt),Rail,0.0325
+1,VMT (T),Rail,0.01
+1,CO2 (Bt),Buses,0.025436878117567563
+1,VMT (T),Buses,0.01849

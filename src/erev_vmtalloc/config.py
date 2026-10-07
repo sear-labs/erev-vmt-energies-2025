@@ -24,6 +24,7 @@ REQUIRED_TOP_LEVEL = (
     "fleet",
     "charging",
     "scenarios",
+    "paper_scenarios",
 )
 
 REQUIRED_NESTED = {
@@ -37,7 +38,26 @@ REQUIRED_NESTED = {
         "weights_source",
         "published_fallback_weights",
     ),
+    "paper_scenarios": (
+        "ranges",
+        "ev_row_range_mi",
+        "vehicles",
+        "lifespan_years",
+        "households_millions",
+        "kg_co2_per_gal",
+        "scenarios",
+        "charging",
+    ),
 }
+
+PAPER_SCENARIO_KEYS = (
+    "mpg",
+    "mi_per_kwh",
+    "grid_g_per_kwh",
+    "pack_usd_per_kwh",
+    "gas_usd_per_gal",
+    "elec_usd_per_kwh",
+)
 
 
 @dataclass(frozen=True)
@@ -120,6 +140,17 @@ def load_config(path: str | Path) -> Config:
     if abs(sum(fallback.values()) - 1.0) > 1e-9:
         raise ValueError(
             f"{path}: published_fallback_weights must sum to 1.0, got {sum(fallback.values())}"
+        )
+
+    for name, params in raw["paper_scenarios"]["scenarios"].items():
+        absent = [k for k in PAPER_SCENARIO_KEYS if k not in params]
+        if absent:
+            raise ValueError(f"{path}: paper_scenarios.scenarios.{name} is missing {absent}")
+    basis = raw["paper_scenarios"]["charging"].get("vmt_basis")
+    if basis not in ("table1_printed", "normalized"):
+        raise ValueError(
+            f"{path}: paper_scenarios.charging.vmt_basis must be 'table1_printed' or "
+            f"'normalized', got {basis!r}"
         )
 
     for label, bounds in raw["bin_bounds"].items():

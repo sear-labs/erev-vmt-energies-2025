@@ -40,6 +40,13 @@ dependencies = [
 dev = [
     "pytest>=8.0,<9",
     "ruff>=0.6,<0.15",
+    # Read the frozen Fall 2025 workbook in tests/test_workbook_agreement.py.
+    "openpyxl>=3.1,<4",
+    # Execute notebooks/verify.ipynb in tests/test_verification_notebook.py, and the
+    # frozen notebook (in a temporary copy) in scripts/capture_notebook_figures.py.
+    "nbformat>=5.9,<6",
+    "nbclient>=0.10,<1",
+    "ipykernel>=6.29,<8",
 ]
 
 [project.urls]
