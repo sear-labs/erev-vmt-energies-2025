@@ -1,0 +1,13 @@
+# Frozen evidence: what produced the published numbers. Recomputed by
+# tests/test_frozen_evidence.py; a mismatch fails the suite.
+#
+# Normalisation, stated because a hash quoted without it is not evidence:
+#   .ipynb .json  sha256 of the bytes with CRLF replaced by LF
+#   .xlsx         sha256 of the raw bytes
+# Paths are relative to notebooks/. Two spaces separate hash and path; paths may
+# contain spaces.
+f1ff2b3c3c20213b47e7ed26381ad67f89cd3fa67accc600e6b8cc15d846558b  2025-12-09-as-published.ipynb
+6fbee8c954079bd3699b90880901938228b64913495d86eeacad58d4415cac71  fall-2025/EV_Graphs_Updated_Finalist.ipynb
+b3e78891979ee0199726264ba12c92bfb879c66e93b515770a57be3a2e765471  fall-2025/Calculations Check_final.xlsx
+119631b79342e4c5b3d2af53240079d16ea2dcda4e25f95dad8589ba169853d2  fall-2025/Calculations Check_final - Copy.xlsx
+d99bfd6f3033eef05f3aac9fc2f1e12dac75c838db8a3657ae3a0b9feb3881a8  fall-2025/PROVENANCE.json

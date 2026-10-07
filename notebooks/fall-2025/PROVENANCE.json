@@ -1,0 +1,91 @@
+{
+  "imported": "2026-10-07",
+  "source": "SEAR Labs shared drive, EV Analysis/Fall 2025/Code and EV Analysis/Data",
+  "also_at": "searlabtransfer/EV-Analysis@042738c2bdb2383ba9d36055f5fd342aab61f4a4 Fall_2025/ (organisation since deleted)",
+  "files": {
+    "EV_Graphs_Updated_Finalist.ipynb": {
+      "original_sha256": "6fbee8c954079bd3699b90880901938228b64913495d86eeacad58d4415cac71",
+      "change": "none; byte-identical",
+      "committed_sha256": "6fbee8c954079bd3699b90880901938228b64913495d86eeacad58d4415cac71"
+    },
+    "Calculations Check_final.xlsx": {
+      "original_sha256": "3b65a1a460ca653bb45d52b7a03638e232ea891ecbbecde8fd69144e937077ef",
+      "members": {
+        "[Content_Types].xml": "9e8c3dcb86f3781d1a2f44e3b0e7251a7b2b066894ed62265cac727f22048d8c",
+        "_rels/.rels": "73e5a29f48d5ab979eeda062493bc7e679265c1344ef936978b8becec5549497",
+        "xl/workbook.xml": "52ccb0730bd6879d238ed135e67a013a2ea010cf92dba7e168386bef6c16402b",
+        "xl/_rels/workbook.xml.rels": "d0025cfd2ac71defde9eae38aa43cccfa53a5fcfce91d4af200f3d244a1ba676",
+        "xl/worksheets/sheet1.xml": "91cbb15d0a2e91ad25dee40ad4caa361cb3261dd34e2bf86dc3134ec923875b6",
+        "xl/worksheets/sheet2.xml": "f036d684ea27563aec521ae6d8b558bdb69585aaeac47d727494763262506727",
+        "xl/worksheets/sheet3.xml": "c07e89b07fae35fcac91e850b5711b00ae4ada29fc00581922c8ff22487961de",
+        "xl/worksheets/sheet4.xml": "ca47540831585952fd9fc09a28a316e1abb5ed39770f5ad4860430a98f5b16ce",
+        "xl/theme/theme1.xml": "0c8f48efbaa9f9470fd12aea56b8b7f992d43343c84808b46a0d1738ca46c7ab",
+        "xl/styles.xml": "186ed01fb09c4665ae2c332946066a432bda5f90fde5d189fee265694ad0f383",
+        "xl/sharedStrings.xml": "15bfc6cc152ea364b778e10dd73098b4aa16d129b9346f615d8341e51508bdf0",
+        "xl/calcChain.xml": "8a1a7b3fa68fc5ebaec6f11d7612709426891a152fd8495d5ea99745ff9571d0",
+        "docProps/core.xml": "4c067ed6d3ba138df0a7764505ad6e2f7d48eea1aeb801ae50ec580cc8a9e98a",
+        "docProps/app.xml": "8936e48d735802280029f11e72323a402ac79546db3bcc5b9526e74353052bcb",
+        "xl/worksheets/sheet5.xml": "8e1617aa08e4bcdb165d17096e015893b2f4b9c3e08ebfb3e040cd548304753b",
+        "xl/worksheets/sheet6.xml": "0eab8441139c6a96d219b77f05543b61c566b32b8ca8c64428ead6497cce1b2e"
+      },
+      "edits": {
+        "xl/workbook.xml": {
+          "removed_bytes": [
+            818,
+            1206
+          ],
+          "sha256_before_span": "48f2a37c114d4d393a5d22fe409efa2782319a0710ec17d9685d2857103d4c7d",
+          "sha256_after_span": "f1d425124680cfd730488644be5866721566b0ab01b473b4e2e2d42d665facd0",
+          "removed": "<mc:AlternateContent> wrapping one <x15ac:absPath>"
+        }
+      },
+      "change": "xl/workbook.xml: <mc:AlternateContent> wrapping one <x15ac:absPath> removed",
+      "committed_sha256": "b3e78891979ee0199726264ba12c92bfb879c66e93b515770a57be3a2e765471"
+    },
+    "Calculations Check_final - Copy.xlsx": {
+      "original_sha256": "7bd095d9ad37009ff97a4157478767e06f2c6b1afdbe8983d2317f3828d69e6d",
+      "members": {
+        "[Content_Types].xml": "f2f2fdb6067381784562bb57bb6cf75365b6eaccdd603351015f41dad2fa6fbd",
+        "_rels/.rels": "73e5a29f48d5ab979eeda062493bc7e679265c1344ef936978b8becec5549497",
+        "xl/_rels/workbook.xml.rels": "9e1df305298d1fd253ccac1c495ffd6b3093d3c2d9e269dac07432cfb1a67046",
+        "xl/workbook.xml": "233a3d338ecc22e74167643870f87d60056c000f55d0881c9bda412ac5b7f4ab",
+        "xl/worksheets/sheet4.xml": "fc73a5ab7abd430f6c73c72b8129b409da3b061de897eeeb47f9d0ef2eb0d1a7",
+        "xl/worksheets/sheet2.xml": "5c267f98fd565e9015e482f5aee66f5048c576cb68ad30cb3149bfc354abb95b",
+        "xl/worksheets/sheet3.xml": "72e14d154a4f834237666aaaff5b37806d4ea3289140bcfbebee4b7924eddd08",
+        "xl/sharedStrings.xml": "73702a82daef695ff95f69ef6877ebecd0c3684e1f478e9d8c91b830c00f097d",
+        "xl/worksheets/sheet1.xml": "83e67087097dac8714beec1624eed146457bb317d2c628aaf22e3ab781c718b3",
+        "xl/styles.xml": "720b94a6bb6b4c1bcf21a9332704d7de6ff97af21763fd301453f7f8a8029b14",
+        "xl/worksheets/sheet8.xml": "36ed730bf329558fa8c554f0bb763367ba09bc4e4b177efe3f649f768f998d1d",
+        "xl/worksheets/sheet5.xml": "0565a9e1a349e852cc2d6acb2d8f74ea3775c255a92724aaf1f6f69936d3b0af",
+        "xl/worksheets/sheet6.xml": "39371726c8d9717ed93a091676c01ca0ab7b39192d5bdc0caeca92c6772b5d65",
+        "xl/theme/theme1.xml": "0c8f48efbaa9f9470fd12aea56b8b7f992d43343c84808b46a0d1738ca46c7ab",
+        "xl/worksheets/sheet7.xml": "6b8d1f3c9b4563ba6ded853afd98ab9e412a67fcf8a87f3cb721de0e5c900b6a",
+        "docProps/app.xml": "940a6842aef79ed6fc6a981acbd40888d5beba7b2a3f0cf3b30ad63dad548b98",
+        "xl/calcChain.xml": "2fadccf1d39ec598850e6ce3a7c4640d1fefd9186b7b2ac254bf2ef7bdd45bfd",
+        "docProps/core.xml": "401cd614487a1ab656d035de39855b579fb75b271368c18df0442f52439b14c7"
+      },
+      "edits": {
+        "xl/workbook.xml": {
+          "removed_bytes": [
+            465,
+            797
+          ],
+          "sha256_before_span": "f51ef838ef50568bd3f4e802af9748288e6e4a887bc14c6df420b65ebfece2fb",
+          "sha256_after_span": "5c4c04f250d3dfc0cc22243449133508186deffe2c71d2c88587ba7d028a627f",
+          "removed": "<mc:AlternateContent> wrapping one <x15ac:absPath>"
+        },
+        "docProps/core.xml": {
+          "removed_bytes": [
+            408,
+            420
+          ],
+          "sha256_before_span": "b5a9ac5592dcc56547286d5bc2b1911907b518e3ae23aff2b9adae82cb5dcf4f",
+          "sha256_after_span": "3cc37c4444bf54803c48283d96faa668c3fd66916441b3ea328f72e0f5aa9f69",
+          "removed": "the text of <cp:lastModifiedBy>"
+        }
+      },
+      "change": "xl/workbook.xml: <mc:AlternateContent> wrapping one <x15ac:absPath> removed; docProps/core.xml: the text of <cp:lastModifiedBy> removed",
+      "committed_sha256": "119631b79342e4c5b3d2af53240079d16ea2dcda4e25f95dad8589ba169853d2"
+    }
+  }
+}

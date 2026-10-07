@@ -25,3 +25,7 @@ data/raw/** -text
 # rewrite it; a conflict here should be resolved by a human deciding which run
 # is the published one.
 *.ipynb -merge text eol=lf
+
+# The imported Fall 2025 evidence is byte-exact against notebooks/MANIFEST.sha256 and
+# the original hashes in its PROVENANCE.json. No conversion of any kind.
+notebooks/fall-2025/** -text -merge
