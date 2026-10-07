@@ -1,0 +1,40 @@
+{
+  "upload_type": "software",
+  "license": "mit-license",
+  "creators": [
+    {
+      "name": "Patil, Hritik Vivek",
+      "affiliation": "University of Texas at Arlington"
+    },
+    {
+      "name": "Kumbhar, Akhilesh Arunkumar",
+      "affiliation": "University of Texas at Arlington"
+    },
+    {
+      "name": "Jones, Erick C., Jr.",
+      "affiliation": "University of Texas at Arlington",
+      "orcid": "0000-0003-0559-4699"
+    }
+  ],
+  "access_right": "open",
+  "title": "erev-data-energies-2025: electric and gasoline miles for extended-range EVs - Energies 2025 paper code",
+  "description": "<p>The code, frozen inputs and calculation workbook behind Patil, Kumbhar and Jones (2025), <em>Energies</em> 18, 6448: how much of US light-duty travel an extended-range electric vehicle (EREV) can drive on battery, as a function of electric range and of how often it charges, and the emissions, battery capacity and cost that follow.</p><p><code>python scripts/run_all.py</code> reproduces the paper from frozen 2023 BTS and FHWA snapshots, with no network and no API key. Every printed cell of Tables 1-3 and 5-6 (635 cells), 31 numbers quoted in the prose, and every value plotted in Figures 2, 3 and 5-13 (440) are checked by the test suite. <code>notebooks/verify.ipynb</code> shows the same comparison, executed.</p><p>Tables 4-6 and the figures were computed in a spreadsheet and a plotting notebook; both are archived verbatim under <code>notebooks/fall-2025/</code> (the workbooks less one saved-folder path) and frozen against a hash manifest, and the spreadsheet's model is reimplemented in Python and checked against its 1,403 cached formula values.</p><p><strong>Known issues in the published article, stated plainly and not corrected:</strong> the charging-frequency figures (5, 7, 9, 11, 13) stand on 3,392.5 billion miles of VMT where the tables use 3,262.8, so the daily-charging case runs 3.98% above the Average scenario rather than below it as the text says, and Figure 11's CO2 savings are understated. Figure 4 cannot be regenerated from the archived notebook, and the 5-, 3- and 2-day charging inputs have no surviving generator. Table 4 prints a vehicle count (286.1 M), a CO2 factor (8.887 kg/gal) and the order of three scenario rows that differ from what produced Tables 5-6, and Table 6's Average all-electric operating cost uses the Best-case electricity price. The scenario-weight lookup in the original notebook matched no Census variables and fell back to fixed weights. Each is listed in the README under \"What reproduces, and what doesn't\" and pinned by a test.</p><p><strong>Licensing:</strong> code is MIT; data, tables, figures and notebooks are CC BY 4.0, stated by path in LICENSE-DATA.</p>",
+  "related_identifiers": [
+    {
+      "identifier": "10.3390/en18246448",
+      "relation": "isSupplementTo",
+      "scheme": "doi",
+      "resource_type": "publication-article"
+    }
+  ],
+  "keywords": [
+    "extended-range electric vehicles",
+    "vehicle miles traveled",
+    "transportation electrification",
+    "charging frequency",
+    "emissions",
+    "battery capacity",
+    "energy policy",
+    "reproducibility"
+  ]
+}

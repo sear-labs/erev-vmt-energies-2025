@@ -41,10 +41,18 @@ tracked file, including inside `.xlsx` workbooks. Describe a location in words
 
 ## Layout that is not obvious from the tree
 
-- `notebooks/2025-12-09-as-published.ipynb` is **frozen evidence**, not a
-  maintained copy. It is what produced the published numbers, shipped with its
-  outputs. Do not tidy it, do not refactor it, do not fix its bugs. Corrections
-  go in `src/` and the divergence is recorded in the README.
+- `notebooks/2025-12-09-as-published.ipynb` and everything in
+  `notebooks/fall-2025/` are **frozen evidence**, not maintained copies. The first
+  produced Tables 1-3; the Fall 2025 notebook and workbooks produced Tables 4-6
+  and the figures. Do not tidy, re-execute or re-save any of them, and do not fix
+  their bugs. Corrections go in `src/` and the divergence is recorded in the
+  README. `tests/test_frozen_evidence.py` enforces this against
+  `notebooks/MANIFEST.sha256`. `notebooks/verify.ipynb` is the one maintained
+  notebook there.
+- `src/erev_vmtalloc/costs.py` is the Fall 2025 workbook's model, column for
+  column. Its parameters are `paper_scenarios` in `config/base.yaml`, several of
+  which differ from what the article's Table 4 prints; the config says which and
+  why.
 - `data/raw/` is committed on purpose and is small. The published notebook
   called the BTS and Census APIs at run time; that made the paper's inputs
   mutable, so they are frozen here with provenance sidecars and a manifest.
@@ -60,12 +68,23 @@ through to a hardcoded vector. The paper itself never says how the weights were 
 See README, "Scenario weights". Changing the default silently changes published
 scenario numbers.
 
+The same holds for `paper_scenarios.charging.vmt_basis`, which defaults to
+`table1_printed`. The published charging-frequency figures stand on 3,392.5 B
+miles, not the tables' 3,262.8 B, and that default reproduces them. Likewise
+`elec_usd_per_kwh_ev_row: 0.15` reproduces Table 6's Average EV row. Both are
+published defects, kept on purpose; see README, "What reproduces, and what
+doesn't".
+
 ## Conventions local to here
 
 - Bin labels use an ASCII hyphen (`"0-1"`), never an en-dash. The label is a
   join key across three files.
 - Anything asserting a number from the paper lives in
-  `tests/test_paper_numbers.py` and names the sentence it defends.
+  `tests/test_paper_numbers.py` and names the sentence it defends. The
+  cell-by-cell comparison logic is `src/erev_vmtalloc/verify.py`, shared with
+  `notebooks/verify.ipynb` so the two cannot disagree.
+- The article's printed tables are `tests/fixtures/article/`, kept as printed.
+  Never edit one to make a test pass.
 - Residuals that are known and unexplained are listed in the README under
   "Stated residuals". An unexplained residual that is not written down is
   indistinguishable from an unfound bug - so add to that list rather than

@@ -9,9 +9,14 @@ This licence covers the non-software content of this repository:
 
     data/          frozen input snapshots and their provenance sidecars
     results/       committed tables and figures
-    notebooks/     the frozen as-published notebook
+    notebooks/     the frozen notebooks and calculation workbooks behind the
+                   paper, and the verification notebook
+    tests/fixtures/  the article's printed tables, and the values its figures
+                   plot. The article is itself CC BY 4.0 (Energies 2025, 18,
+                   6448, https://doi.org/10.3390/en18246448).
 
-The software -- `src/`, `scripts/`, `tests/` -- is licensed MIT; see LICENSE.
+The software -- `src/`, `scripts/`, and `tests/` apart from `tests/fixtures/` --
+is licensed MIT; see LICENSE.
 The split is stated by path in README.md so that no file is claimed by two
 documents.
 

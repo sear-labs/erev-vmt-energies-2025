@@ -2,13 +2,22 @@
 
 from __future__ import annotations
 
+import sys
 from pathlib import Path
 
 import pytest
 
-from erev_vmtalloc import sources
-from erev_vmtalloc.allocation import fit_bin_distances
-from erev_vmtalloc.config import load_config
+# A bare clone, before `pip install -e .`, cannot import the package, and the suite
+# would stop at collection instead of giving a result. Put src/ on the path only in
+# that case; after an install the import succeeds and this does nothing.
+try:
+    import erev_vmtalloc  # noqa: F401
+except ModuleNotFoundError:
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
+
+from erev_vmtalloc import sources  # noqa: E402
+from erev_vmtalloc.allocation import fit_bin_distances  # noqa: E402
+from erev_vmtalloc.config import load_config  # noqa: E402
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 RAW_DIR = REPO_ROOT / "data" / "raw"

@@ -16,10 +16,9 @@ from __future__ import annotations
 import math
 from pathlib import Path
 
-import pandas as pd
 import pytest
 
-from erev_vmtalloc import costs, metrics, report
+from erev_vmtalloc import costs, metrics, verify
 from erev_vmtalloc.allocation import split_vmt
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -85,109 +84,25 @@ def test_battery_size_at_50_miles_diverges_from_paper(fitted, config):
 # ===========================================================================
 # Every printed cell of Tables 1-3 and 5-6
 # ===========================================================================
-#
-# The article's tables are in tests/fixtures/article/, as printed. A printed value with
-# d decimals is reproduced when the package's full-precision number ROUNDS to it.
-#
-# Nineteen cells in Tables 2 and 3 do not round to the printed value but TRUNCATE to it
-# (January's modelled VMT is 278.367; the article prints 278.36). They are listed by
-# name below. Each must truncate to its printed value and must NOT round to it, so the
-# list cannot quietly go stale in either direction. Every other cell must round.
-
-TRUNCATED = {
-    ("table2", "1", "model_vmt_b"), ("table2", "2", "model_vmt_b"), ("table2", "2", "error_pct"),
-    ("table2", "7", "model_vmt_b"), ("table2", "11", "model_vmt_b"),
-    ("table2", "11", "error_pct"), ("table2", "12", "model_vmt_b"),
-    ("table3", "0-1", "vmt_b_yr"), ("table3", "0-1", "ev_vmt_b_yr"),
-    ("table3", "3-5", "vmt_b_yr"), ("table3", "3-5", "ev_vmt_b_yr"),
-    ("table3", "5-10", "trips_b_yr"), ("table3", "25-50", "trips_b_yr"),
-    ("table3", "50-100", "trips_b_yr"), ("table3", "50-100", "vmt_b_yr"),
-    ("table3", "100-250", "trips_b_yr"), ("table3", "100-250", "vmt_b_yr"),
-    ("table3", "250-500", "gas_vmt_b_yr"), ("table3", "500+", "vmt_b_yr"),
-}
+# The comparison itself lives in erev_vmtalloc.verify, so this suite and
+# notebooks/verify.ipynb run the same check. A printed value must equal the package's
+# number rounded to the printed precision; 19 cells in Tables 2-3 that were truncated
+# in print are listed by name in verify.TRUNCATED.
 
 
-def _parse(printed: str):
-    """'$ 57.47' -> (57.47, 2); '59.4%' -> (59.4, 1); 'N/A' and '$-' -> (None, 0)."""
-    text = str(printed).replace("$", "").replace("%", "").replace(",", "").strip()
-    if text in ("N/A", "-", ""):
-        return None, 0
-    return float(text), len(text.split(".")[1]) if "." in text else 0
+@pytest.mark.parametrize("name", ["table1", "table2", "table3", "table5", "table6"])
+def test_every_printed_cell(fitted, config, name):
+    result = verify.check(name, verify.cells(name, fitted, config, ARTICLE))
+    print(result)
+    assert result.rounded + result.truncated > 0, f"{name}: compared nothing"
+    assert not result.misses, "\n".join(result.misses)
 
 
-def _rounds_to(ours: float, printed: float, decimals: int) -> bool:
-    return abs(ours - printed) <= 0.5 * 10**-decimals + 1e-9
-
-
-def _truncates_to(ours: float, printed: float, decimals: int) -> bool:
-    scale = 10**decimals
-    return abs(math.copysign(math.floor(abs(ours) * scale + 1e-9) / scale, ours) - printed) < 1e-9
-
-
-def _check_table(name: str, cells: list[tuple[str, str, float, str]]):
-    """cells: (row key, column, our full-precision value, printed text)."""
-    misses, n_round, n_trunc, n_na = [], 0, 0, 0
-    for row, col, ours, printed in cells:
-        value, d = _parse(printed)
-        if value is None:
-            n_na += 1
-            if not math.isnan(ours):
-                misses.append(f"{name} {row} {col}: printed {printed!r}, ours {ours}")
-            continue
-        if (name, row, col) in TRUNCATED:
-            if _truncates_to(ours, value, d) and not _rounds_to(ours, value, d):
-                n_trunc += 1
-            else:
-                misses.append(f"{name} {row} {col}: listed as truncated, but ours {ours!r} "
-                              f"vs printed {printed!r} is not a truncation-only match")
-        elif _rounds_to(ours, value, d):
-            n_round += 1
-        else:
-            misses.append(f"{name} {row} {col}: printed {printed!r}, ours {ours!r}")
-    print(f"{name}: {n_round} cells round to print, {n_trunc} truncate to print, "
-          f"{n_na} printed N/A or $-, {len(misses)} do not reproduce")
-    assert n_round + n_trunc > 0, f"{name}: compared nothing"
-    assert not misses, "\n".join(misses)
-
-
-def _fixture(name):
-    return pd.read_csv(ARTICLE / f"{name}.csv", dtype=str, keep_default_na=False)
-
-
-def test_table1_every_cell(fitted):
-    ours = report.annual_table(fitted)
-    cols = {"trips_b_yr": "Trips (B/year)", "avg_bin_dist_mi": "Average Bin Distance (miles)",
-            "calculated_vmt_b": "Calculated VMT (B/year)"}
-    printed = _fixture("table1")
-    assert list(printed["bin"]) == list(ours["Trip Distance Bin (miles)"])
-    _check_table("table1", [(r["bin"], c, float(ours.iloc[i][v]), r[c])
-                            for i, r in printed.iterrows() for c, v in cols.items()])
-
-
-def test_table2_every_cell(fitted):
-    modelled = fitted.vmt_miles_prenorm.sum(axis=1) / 1e9
-    error = fitted.monthly_error_pct(prenorm=True)
-    printed = _fixture("table2")
-    cells = []
-    for i, r in printed.iterrows():
-        assert int(r["month"]) == fitted.months[i]
-        cells += [(r["month"], "fhwa_vmt_b", float(fitted.fhwa_billion[i]), r["fhwa_vmt_b"]),
-                  (r["month"], "model_vmt_b", float(modelled[i]), r["model_vmt_b"]),
-                  (r["month"], "error_pct", float(error[i]), r["error_pct"])]
-    _check_table("table2", cells)
-
-
-def test_table3_every_cell(fitted, config):
-    ours = report.table3(fitted, 50, config["paper_scenarios"]["households_millions"],
-                         round_trip=config.round_trip)
-    cols = {"avg_dist_mi": "Avg Dist (mi)", "trips_b_yr": "Trips (B/yr)",
-            "trips_b_wk": "Trips (B/wk)", "trips_per_hh_wk": "Trips/HH/wk",
-            "vmt_b_yr": "VMT (B/yr)", "ev_vmt_b_yr": "EV VMT (B/yr)",
-            "gas_vmt_b_yr": "Gas VMT (B/yr)", "ev_pct_in_bin": "EV% in bin"}
-    printed = _fixture("table3")
-    assert list(printed["bin"]) == list(ours["Trip Distance Bin (miles)"])
-    _check_table("table3", [(r["bin"], c, float(ours.iloc[i][v]), r[c])
-                            for i, r in printed.iterrows() for c, v in cols.items()])
+def test_the_truncation_list_names_real_cells(fitted, config):
+    """Every entry in verify.TRUNCATED must be a cell the comparison actually reaches."""
+    reached = {(n, row, col) for n in ("table2", "table3")
+               for row, col, _, _ in verify.cells(n, fitted, config, ARTICLE)}
+    assert verify.TRUNCATED <= reached, sorted(verify.TRUNCATED - reached)
 
 
 @pytest.fixture(scope="module")
@@ -198,47 +113,6 @@ def scen(fitted, config):
 @pytest.fixture(scope="module")
 def chg(fitted, config):
     return costs.charging_table(fitted, config, RAW)
-
-
-TABLE5 = {c: c for c in ("Gas VMT (B)", "MPG", "Gallons (B)", "Gas Emissions (Mt CO2)",
-                         "Electric VMT (B)", "Electricity (TWh)",
-                         "Electricity Emissions (Mt CO2)", "Total Emissions (Mt CO2)",
-                         "CO2 Saved (Mt CO2)")} | {"mi /kWh": "mi / kWh"}
-# printed column -> (package column, multiplier to the printed unit)
-TABLE6 = {"% EV VMT": ("% Electric", 100), "% Increase": ("% Increase", 100),
-          "Battery Size Average (kWh)": ("Battery Size (kWh)", 1),
-          "Battery Capacity (TWh)": ("Installed Battery (TWh)", 1),
-          "Battery (Wh) /VMT": ("Battery Wh / VMT", 1),
-          "Battery Cost $T": ("Battery Cost ($T)", 1),
-          "$CAPEX /kg CO2": ("$ CAPEX / kg CO2", 1), "$CAPEX /EV Mile": ("$ CAPEX / EV Mile", 1),
-          "$OPEX": ("OPEX ($B)", 1), "$OPEX /VMT": ("$ OPEX / VMT", 1),
-          "$OPEX /kg CO2": ("$ OPEX / kg CO2", 1)}
-
-
-def _scenario_cells(name, scen, columns):
-    printed = _fixture(name)
-    assert list(printed["Vehicle Type"]) == list(scen["Vehicle Type"])
-    assert list(printed["Scenario"]) == list(scen["Scenario"])
-    cells = []
-    for i, r in printed.iterrows():
-        key = f"{r['Scenario']}|{r['Vehicle Type']}"
-        for col, spec in columns.items():
-            src, mult = spec if isinstance(spec, tuple) else (spec, 1)
-            value = float(scen.iloc[i][src])
-            # The ICE row's battery cost is printed '$-': zero, shown as a dash.
-            if r[col].strip() == "$-":
-                assert value == 0.0, f"{key} {col}: printed $-, ours {value}"
-                value = math.nan
-            cells.append((key, col, value * mult, r[col]))
-    return cells
-
-
-def test_table5_every_cell(scen):
-    _check_table("table5", _scenario_cells("table5", scen, TABLE5))
-
-
-def test_table6_every_cell(scen):
-    _check_table("table6", _scenario_cells("table6", scen, TABLE6))
 
 
 # ===========================================================================
@@ -253,62 +127,12 @@ def _avg(scen, r):
     return _row(scen, "Average", costs.ldv_label(r))
 
 
-def _prose_values(fitted, config, scen):
-    """(section, quoted text, our value in the quoted unit, printed number as text)."""
-    base = {r: split_vmt(fitted, r, round_trip=config.round_trip) for r in (50, 100, 150)}
-    old = metrics.summarize([base[50], base[150]], config).set_index("Range (mi)")
-    ice = _row(scen, "Average", costs.ICE)
-    ev = _row(scen, "Average", costs.EV)
-    return [
-        ("summary", "73.3% of VMT", base[50].ev_share_pct, "73.3"),
-        ("summary", "2.391 T electric mi/yr", base[50].ev_billion / 1000, "2.391"),
-        ("summary", "86.8% at 150 miles", base[150].ev_share_pct, "86.8"),
-        ("summary", "(2.83 T)", base[150].ev_billion / 1000, "2.83"),
-        ("summary", "574 Mt (50 mi)", _avg(scen, 50)["CO2 Saved (Mt CO2)"], "574"),
-        ("summary", "0.072 USD/kg CO2 (50 mile)", _avg(scen, 50)["$ CAPEX / kg CO2"], "0.072"),
-        ("4.3", "2.39 trillion electric miles", base[50].ev_billion / 1000, "2.39"),
-        ("4.3", "573.9 Mt CO2 avoided", _avg(scen, 50)["CO2 Saved (Mt CO2)"], "573.9"),
-        ("4.3", "Battery capacity per VMT 1.097 (50 mi)", _avg(scen, 50)["Battery Wh / VMT"],
-         "1.097"),
-        ("4.3", "to 3.291 (150 mi)", _avg(scen, 150)["Battery Wh / VMT"], "3.291"),
-        ("4.3", "+320 B from 50 -> 100", base[100].ev_billion - base[50].ev_billion, "320"),
-        ("4.3", "+121 B from 100 -> 150", base[150].ev_billion - base[100].ev_billion, "121"),
-        ("4.3", "battery capacity from 3.6 [50 mi]", _avg(scen, 50)["Installed Battery (TWh)"],
-         "3.6"),
-        ("4.3", "to 10.7 TWh [150 mi]", _avg(scen, 150)["Installed Battery (TWh)"], "10.7"),
-        # These four come from the OTHER model in this repository (metrics.summarize: a
-        # 241.8 M-vehicle fleet, one year, 26.2 mpg, 387 g/kWh), not from the workbook
-        # behind Table 6, which gives $0.017 and $0.044 per mile and $72 and $182 per
-        # ton over ten years. Both are in the paper; see README.
-        ("4.3", "USD 0.161/mi (50 mi)", old.loc[50.0, "$ / electric mile"], "0.161"),
-        ("4.3", "to USD 0.409/mi (150 mi)", old.loc[150.0, "$ / electric mile"], "0.409"),
-        ("4.3", "from USD 712/t", old.loc[50.0, "$ / ton CO2 saved"], "712"),
-        ("4.3", "to USD 1802/t", old.loc[150.0, "$ / ton CO2 saved"], "1802"),
-        ("conclusions", "rises from 73.3 %", base[50].ev_share_pct, "73.3"),
-        ("conclusions", "to 86.8 %", base[150].ev_share_pct, "86.8"),
-        ("conclusions", "increase from 574", _avg(scen, 50)["CO2 Saved (Mt CO2)"], "574"),
-        ("conclusions", "to 680 Mt", _avg(scen, 150)["CO2 Saved (Mt CO2)"], "680"),
-        ("conclusions", "0.072 USD/kg CO2 at 50 mi", _avg(scen, 50)["$ CAPEX / kg CO2"], "0.072"),
-        ("conclusions", "to 0.182 USD/kg CO2 at 150 mi", _avg(scen, 150)["$ CAPEX / kg CO2"],
-         "0.182"),
-        ("conclusions", "11.4 cents/mi for ICEVs", ice["$ OPEX / VMT"] * 100, "11.4"),
-        ("conclusions", "averages 4- [cents/mi]", ev["$ OPEX / VMT"] * 100, "4"),
-        ("conclusions", "-8 cents/mi", _avg(scen, 50)["$ OPEX / VMT"] * 100, "8"),
-        ("conclusions", "roughly 7- [TWh, 100 mi]", _avg(scen, 100)["Installed Battery (TWh)"],
-         "7"),
-        ("conclusions", "-9 TWh [125 mi]", _avg(scen, 125)["Installed Battery (TWh)"], "9"),
-        ("conclusions", "USD 0.8- [trillion, 100 mi]", _avg(scen, 100)["Battery Cost ($T)"],
-         "0.8"),
-        ("conclusions", "-1.0 trillion [125 mi]", _avg(scen, 125)["Battery Cost ($T)"], "1.0"),
-    ]
-
-
-def test_prose_numbers_reproduce(fitted, config, scen):
-    rows = _prose_values(fitted, config, scen)
+def test_prose_numbers_reproduce(fitted, config):
+    rows = verify.prose_numbers(fitted, config)
     misses = []
     for where, quote, ours, printed in rows:
-        value, d = _parse(printed)
-        ok = _rounds_to(float(ours), value, d)
+        value, d = verify.parse(printed)
+        ok = verify.rounds_to(float(ours), value, d)
         print(f"{'ok  ' if ok else 'MISS'} {where:<11} {quote:<42} ours {float(ours):.6g}")
         if not ok:
             misses.append(f"{where}: '{quote}' printed {printed}, ours {float(ours)!r}")
@@ -392,7 +216,7 @@ def test_table4_prints_three_rows_in_the_reverse_order(config):
     """Table 4's heading says Worst/Average/Best; fuel economy, grid intensity and
     electricity price are printed Best/Average/Worst."""
     s = config["paper_scenarios"]["scenarios"]
-    printed = _fixture("table4").set_index("parameter")["printed_value"]
+    printed = verify.printed_table(ARTICLE, "table4").set_index("parameter")["printed_value"]
     assert printed["Average Fuel Economy"].startswith("18/26.4/36")
     assert (s["Worst"]["mpg"], s["Best"]["mpg"]) == (36.0, 18.0)
     assert printed["U.S. Grid CO2 Intensity (2023)"].startswith("125/348/714")

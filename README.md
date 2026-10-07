@@ -273,8 +273,8 @@ Two licences, because one does not cover the other's files.
 
 | path | licence |
 |---|---|
-| `src/`, `scripts/`, `tests/` | MIT — see [LICENSE](LICENSE) |
-| `data/`, `results/`, `notebooks/` | CC BY 4.0 — see [LICENSE-DATA](LICENSE-DATA) |
+| `src/`, `scripts/`, `tests/` (except `tests/fixtures/`) | MIT — see [LICENSE](LICENSE) |
+| `data/`, `results/`, `notebooks/`, `tests/fixtures/` | CC BY 4.0 — see [LICENSE-DATA](LICENSE-DATA) |
 
 The paper itself is CC BY 4.0 from MDPI.
 
