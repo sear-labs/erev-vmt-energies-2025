@@ -24,7 +24,8 @@ import pytest
 ROOT = Path(__file__).resolve().parents[1]
 NOTEBOOKS = ROOT / "notebooks"
 MANIFEST = NOTEBOOKS / "MANIFEST.sha256"
-PROVENANCE = NOTEBOOKS / "fall-2025" / "PROVENANCE.json"
+# One import record per imported group: fall-2025/ and fall-2025/revision-1/.
+PROVENANCES = sorted(NOTEBOOKS.rglob("PROVENANCE.json"))
 
 # Files under notebooks/ that are maintained rather than frozen.
 MAINTAINED = {"README.md", "MANIFEST.sha256", "verify.ipynb"}
@@ -79,13 +80,24 @@ def test_every_file_under_notebooks_is_frozen_or_maintained():
 
 
 def _workbooks():
-    record = json.loads(PROVENANCE.read_text(encoding="utf-8"))["files"]
-    return [(name, entry) for name, entry in record.items() if name.endswith(".xlsx")]
+    out = []
+    for provenance in PROVENANCES:
+        record = json.loads(provenance.read_text(encoding="utf-8"))["files"]
+        out += [(provenance.parent / name, entry) for name, entry in record.items()
+                if name.endswith(".xlsx")]
+    return out
 
 
-@pytest.mark.parametrize("name,entry", _workbooks(), ids=[n for n, _ in _workbooks()])
-def test_workbook_is_its_original_less_the_recorded_spans(name, entry):
-    path = NOTEBOOKS / "fall-2025" / name
+def test_both_import_records_are_present():
+    assert [p.relative_to(NOTEBOOKS).as_posix() for p in PROVENANCES] == [
+        "fall-2025/PROVENANCE.json", "fall-2025/revision-1/PROVENANCE.json"]
+    assert len(_workbooks()) == 5
+
+
+@pytest.mark.parametrize("path,entry", _workbooks(),
+                         ids=[p.relative_to(NOTEBOOKS).as_posix() for p, _ in _workbooks()])
+def test_workbook_is_its_original_less_the_recorded_spans(path, entry):
+    name = path.name
     assert hashlib.sha256(path.read_bytes()).hexdigest() == entry["committed_sha256"]
 
     with zipfile.ZipFile(path) as z:

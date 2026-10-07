@@ -11,10 +11,15 @@ implementation is `src/erev_vmtalloc/`.
 | `fall-2025/Calculations Check_final - Copy.xlsx` | a later save of the same workbook, rearranged, with the Figure 1 subsector sheet added. Of the published figures, only Figure 6 reads it | same folder |
 | `fall-2025/EV_Graphs_Updated_Finalist.ipynb` | Figures 1–13. Figures 2, 3 and 5–13 read the workbooks; Figures 1 and 4 have their numbers typed into the cell | SEAR Labs shared drive, `EV Analysis/Fall 2025/Code` |
 | `fall-2025/PROVENANCE.json` | the import record: original hashes, and what the import changed | written by `scripts/import_fall2025_evidence.py` |
+| `fall-2025/revision-1/Charging Frequency Data vNov5.xlsx` | the 24 charging values the workbook's `Calcs by Charge` sheet pastes (Figures 5, 7, 9, 11, 13); written by a script on 2025-11-05 that does not survive | the authors' published-paper folder |
+| `fall-2025/revision-1/vmt_cf.xlsx`, `recomputed_vmt_table (1).xlsx` | nothing published: two superseded charging models (2025-11-04 and -05). Kept because they are the likely source of the conclusions' "up to 75%" | same folder |
+| `fall-2025/revision-1/PROVENANCE.json` | the import record for these three | written by `scripts/import_fall2025_evidence.py --revision-1` |
 
 The Fall 2025 files were also in `searlabtransfer/EV-Analysis` at commit `042738c`
 (`Fall_2025/`), byte-identical to the drive copies, before that organisation was
-deleted. They were imported on 2026-10-07.
+deleted. They were imported on 2026-10-07. The three `revision-1/` files were imported
+the same day, from the authors' own folder for the article; each lost its `absPath`
+element and nothing else.
 
 **The import changed two things, both metadata.** Each workbook recorded the folder it
 was last saved in (Excel's `absPath`, in `xl/workbook.xml`): one named a personal
@@ -45,7 +50,8 @@ recorded span. The notebook was copied byte for byte.
   (update if you have official values)", and the published figure plots them. At the
   figure's 3.5-trillion scale they sit at or near zero; pipelines shows at 0.02.
 - **The 5-, 3- and 2-day charging inputs are typed constants** in the workbook's
-  `Calcs by Charge` sheet (`D8:D25`). Nothing that produced them survives here or in
+  `Calcs by Charge` sheet (`D8:D25`), pasted from `revision-1/Charging Frequency Data
+  vNov5.xlsx`. The script that wrote that file does not survive, here or in
   `searlabtransfer/EV-Analysis`. A rule that reproduces all 18 was recovered on
   2026-10-07 (config `paper_scenarios.charging.missed_charge_loss`), and the package
   uses it.

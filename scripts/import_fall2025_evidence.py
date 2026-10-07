@@ -2,6 +2,11 @@
 """Import the Fall 2025 notebook and workbooks behind Tables 4-6 and Figures 1-13.
 
     python scripts/import_fall2025_evidence.py <folder holding the three originals>
+    python scripts/import_fall2025_evidence.py --revision-1 <folder holding the three originals>
+
+The second form imports a later group: three charging-model outputs from the authors'
+first revision (2025-11-04 and -05), into ``notebooks/fall-2025/revision-1/``. See
+"The revision-1 charging files" below.
 
 Run once, on 2026-10-07, from the SEAR Labs shared drive copy (``EV Analysis/Fall
 2025/Code`` and ``EV Analysis/Data``). The same three files sat in
@@ -27,6 +32,19 @@ What it does to each file, and nothing else:
 Every other member of each zip is written back unchanged, and every cell, formula and
 cached value is untouched. Both removals were Jones's decisions (2026-10-07).
 
+The revision-1 charging files, imported on 2026-10-07 at Jones's request from the
+authors' published-paper folder (a personal OneDrive folder, not a shared one):
+
+- ``vmt_cf.xlsx`` (2025-11-04) and ``recomputed_vmt_table (1).xlsx`` (2025-11-05):
+  two superseded charging models. In both, two charges a week lose 71% of the
+  electric miles that seven give, at 25 miles.
+- ``Charging Frequency Data vNov5.xlsx`` (2025-11-05): the file the frozen workbook's
+  ``Calcs by Charge`` values were pasted from.
+
+Each loses its ``absPath`` element, as above, and nothing else. Their last-modified-by
+field names Jones and is kept. A CSV export of the recomputed table sat beside it with
+the same 24 rows; it is not imported.
+
 The workbooks are not re-saved through a spreadsheet library. That would rewrite every
 member, so the committed file could no longer be shown to be the original.
 """
@@ -42,6 +60,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 DEST = ROOT / "notebooks" / "fall-2025"
+DEST_REVISION_1 = DEST / "revision-1"
 
 # sha256 of the originals, as they sat on the shared drive and in searlabtransfer.
 ORIGINALS = {
@@ -51,6 +70,16 @@ ORIGINALS = {
         "3b65a1a460ca653bb45d52b7a03638e232ea891ecbbecde8fd69144e937077ef",
     "Calculations Check_final - Copy.xlsx":
         "7bd095d9ad37009ff97a4157478767e06f2c6b1afdbe8983d2317f3828d69e6d",
+}
+
+# sha256 of the originals, as they sat in the authors' published-paper folder.
+ORIGINALS_REVISION_1 = {
+    "vmt_cf.xlsx":
+        "dbd93f241013a37b515c1f5587e7cf10c847387efac3da64aa9030edb65a4653",
+    "recomputed_vmt_table (1).xlsx":
+        "472b335f29d7a19bee47eb1f7b470d8d827c0a5f9dc9b663e3f274e2c6f098f6",
+    "Charging Frequency Data vNov5.xlsx":
+        "bce607e55e53bcd6c60ffbb57a4de0a548c971af2795c2777383e7f29ee32890",
 }
 
 WORKBOOK_XML = "xl/workbook.xml"
@@ -104,6 +133,26 @@ EDITS = {
         CORE_XML: (empty_last_modified_by, "the text of <cp:lastModifiedBy>"),
     },
 }
+EDITS.update({
+    name: {WORKBOOK_XML: (strip_abspath, "<mc:AlternateContent> wrapping one <x15ac:absPath>")}
+    for name in ORIGINALS_REVISION_1
+})
+
+GROUPS = {
+    "fall-2025": {
+        "originals": ORIGINALS,
+        "dest": DEST,
+        "source": "SEAR Labs shared drive, EV Analysis/Fall 2025/Code and EV Analysis/Data",
+        "also_at": "searlabtransfer/EV-Analysis@042738c2bdb2383ba9d36055f5fd342aab61f4a4"
+                   " Fall_2025/ (organisation since deleted)",
+    },
+    "revision-1": {
+        "originals": ORIGINALS_REVISION_1,
+        "dest": DEST_REVISION_1,
+        "source": "the authors' published-paper folder for this article: charging-model"
+                  " outputs from the first revision, 2025-11-04 and -05",
+    },
+}
 
 
 def import_workbook(src: Path, dst: Path, edits: dict) -> dict:
@@ -132,25 +181,29 @@ def import_workbook(src: Path, dst: Path, edits: dict) -> dict:
 
 
 def main(argv: list[str]) -> int:
-    if len(argv) != 2:
-        print(__doc__.strip().splitlines()[2].strip(), file=sys.stderr)
+    args = argv[1:]
+    group = "fall-2025"
+    if args[:1] == ["--revision-1"]:
+        group, args = "revision-1", args[1:]
+    if len(args) != 1:
+        for line in __doc__.strip().splitlines()[2:4]:
+            print(line.strip(), file=sys.stderr)
         return 2
-    src_dir = Path(argv[1])
-    DEST.mkdir(parents=True, exist_ok=True)
+    src_dir = Path(args[0])
+    spec = GROUPS[group]
+    dest = spec["dest"]
+    dest.mkdir(parents=True, exist_ok=True)
 
-    provenance: dict = {
-        "imported": "2026-10-07",
-        "source": "SEAR Labs shared drive, EV Analysis/Fall 2025/Code and EV Analysis/Data",
-        "also_at": "searlabtransfer/EV-Analysis@042738c2bdb2383ba9d36055f5fd342aab61f4a4"
-                   " Fall_2025/ (organisation since deleted)",
-        "files": {},
-    }
-    for name, expected in ORIGINALS.items():
+    provenance: dict = {"imported": "2026-10-07", "source": spec["source"]}
+    if "also_at" in spec:
+        provenance["also_at"] = spec["also_at"]
+    provenance["files"] = {}
+    for name, expected in spec["originals"].items():
         src = src_dir / name
         original = src.read_bytes()
         got = sha256(original)
         assert got == expected, f"{name}: sha256 {got} is not the recorded original"
-        dst = DEST / name
+        dst = dest / name
         entry: dict = {"original_sha256": expected}
         if name.endswith(".xlsx"):
             entry.update(import_workbook(src, dst, EDITS[name]))
@@ -162,7 +215,7 @@ def main(argv: list[str]) -> int:
         provenance["files"][name] = entry
         print(f"{name}: {entry['change']}")
 
-    out = DEST / "PROVENANCE.json"
+    out = dest / "PROVENANCE.json"
     out.write_text(json.dumps(provenance, indent=2) + "\n", encoding="utf-8", newline="\n")
     print(f"wrote {out.relative_to(ROOT)}")
     return 0

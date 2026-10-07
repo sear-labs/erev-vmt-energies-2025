@@ -16,6 +16,7 @@ from __future__ import annotations
 import math
 from pathlib import Path
 
+import openpyxl
 import pytest
 
 from erev_vmtalloc import costs, metrics, verify
@@ -23,6 +24,7 @@ from erev_vmtalloc.allocation import split_vmt
 
 ROOT = Path(__file__).resolve().parents[1]
 ARTICLE = ROOT / "tests" / "fixtures" / "article"
+REVISION_1 = ROOT / "notebooks" / "fall-2025" / "revision-1"
 RAW = ROOT / "data" / "raw"
 
 # Abstract: "EREVs with a 50-mile range (13.7 kWh battery) could electrify 73.3%
@@ -269,9 +271,10 @@ def test_up_to_75_percent_loss_does_not_regenerate(fitted, config, chg):
     that are not lost electric miles: gas use rising 75% (5 a week, 125 miles), and
     CAPEX per ton rising 74% (2 a week, 25 miles). Pinned as not regenerating.
 
-    Likely origin (README): the sentence was written on 2025-11-01, against an earlier
-    model in which electric miles were capped at charges per week x range. There, two
-    charges against seven lose 1 - 2/7 = 71%.
+    Likely origin (README, and test_superseded_charging_models_lose_71_percent): the
+    sentence was written on 2025-11-01, against an earlier model in which electric miles
+    were capped at charges per week x range. There, two charges against seven lose
+    1 - 2/7 = 71%.
     """
     ev = chg.pivot(index="Vehicle Type", columns="Charges / week", values="Electric VMT (B)")
     national = float((1 - ev[[3, 2]].min(axis=1) / ev[7]).max())
@@ -310,3 +313,30 @@ def test_figure4_and_the_charging_figures_use_two_charging_models(fitted, config
     print(f"150 mi, electric miles lost: weekly simulation {weekly}, charging figures {national}")
     assert all(v < 0.01 for v in weekly.values())
     assert all(v > 0.10 for v in national.values())
+
+
+@pytest.mark.parametrize("name,columns", [
+    ("vmt_cf.xlsx", (1, 2, 4)),
+    ("recomputed_vmt_table (1).xlsx", (0, 1, 3)),
+])
+def test_superseded_charging_models_lose_71_percent(name, columns):
+    """Where "up to 75%" most likely came from, in the authors' own files.
+
+    Conclusions: charging fewer than five times a week "can lose up to 75% of potential
+    electrified miles". The two charging models the authors computed before the
+    published one (2025-11-04 and -05, frozen in notebooks/fall-2025/revision-1/) both
+    give a largest loss of 71.4%: two charges a week against seven, at 25 miles, which
+    is 1 - 2/7. Neither reaches 75%. The published model (vNov5) loses at most 39%.
+    So the sentence matches the superseded models, rounded up, and not the printed one.
+    That is an inference: no file says so.
+    """
+    rng, cpw, ev = columns
+    rows = list(openpyxl.load_workbook(REVISION_1 / name, data_only=True)
+                .active.iter_rows(values_only=True))[1:]
+    ev_vmt = {(r[rng], r[cpw]): r[ev] for r in rows}
+    loss = {(r, k): 1 - ev_vmt[(r, k)] / ev_vmt[(r, 7)]
+            for r, k in ev_vmt if k in (2, 3) and ev_vmt[(r, 7)]}
+    worst = max(loss, key=loss.get)
+    print(f"{name}: largest loss below five charges a week {100 * loss[worst]:.1f}% at {worst}")
+    assert worst == (25, 2)
+    assert loss[worst] == pytest.approx(1 - 2 / 7, abs=0.001)

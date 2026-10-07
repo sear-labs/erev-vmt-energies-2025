@@ -164,10 +164,10 @@ Two inputs had no surviving generator. Each was recovered from the published num
   ... would charge before" a long trip. The three shares are the rule's only free parameters. They
   come out as round numbers, but no derivation of them survives.
   [`test_regenerated_charging_gas_equals_the_pasted_constants`]
-  The file the workbook's values were pasted from does survive, in the authors' published-paper
-  folder: `Charging Frequency Data vNov5.xlsx`, written by a script on 2025-11-05. Its 24 values
-  are bit-identical to `data/raw/charging_gas_vmt_2023.csv`. The script that wrote it is not
-  there.
+  The file the workbook's values were pasted from does survive:
+  `notebooks/fall-2025/revision-1/Charging Frequency Data vNov5.xlsx`, written by a script on
+  2025-11-05. Its 24 values are bit-identical to `data/raw/charging_gas_vmt_2023.csv`. The script
+  that wrote it does not survive. [`test_charging_values_were_pasted_from_the_nov5_file`]
 - **Figure 4's weekly driving profile.** Its notebook cell reads variables the notebook never
   defines, so on its own it draws a hardcoded toy week. The inputs the published figure used are
   derived from the package's own fit. Each step reproduces a typed workbook column exactly:
@@ -198,9 +198,12 @@ Two inputs had no surviving generator. Each was recovered from the published num
   **Its most likely origin is an earlier model.** The sentence first appears in the authors' first
   revision draft (2025-11-01), whose charging figure used a different model. In it, electric miles
   are capped at charges per week × range, so two charges against seven lose 5/7 = 71% at every
-  range up to 75 miles (read from that figure: 71–72%). That model was replaced by 2025-11-05.
-  The sentence was not updated, and went to print. "Up to 75%" reads as 71% rounded up. Nothing
-  records that, so this is an inference, not a regeneration.
+  range up to 75 miles (read from that figure: 71–72%). The two charging tables the authors
+  computed next, on 2025-11-04 and -05, are in `notebooks/fall-2025/revision-1/`. Both give the
+  same largest loss, 71.4% (two charges against seven, at 25 miles), and neither reaches 75%.
+  That model was replaced by 2025-11-05. The sentence was not updated, and went to print. "Up to
+  75%" reads as 71% rounded up. Nothing records that, so this is an inference, not a
+  regeneration. [`test_superseded_charging_models_lose_71_percent`]
 - **Figure 1's VMT dots for rail, watercraft, aircraft, non-transport vehicles and pipelines.**
   They regenerate, but as the values the cell labels "placeholders (update if you have official
   values)". Those placeholders are what was published, and the regenerated figure says so in its
@@ -247,14 +250,15 @@ disagreement disappears.
 ### Where these findings were checked
 
 Against the article on mdpi.com, always: its HTML tables, its text, and pixel readings of its figure
-images. Beyond the article, two sets of the authors' own records, read on 2026-10-07 and not copied
-into this repository:
+images. Beyond the article, two sets of the authors' own records, read on 2026-10-07. Only the three
+charging-model files below were copied into this repository (`notebooks/fall-2025/revision-1/`);
+the drafts, the reviews and the notes were not:
 
 - **The published-paper folder.** It holds:
   - the first submission (2025-10-31);
   - the LaTeX of three revision drafts (2025-11-01, -05 and -16);
   - the reviewers' comments and the authors' responses;
-  - three successive charging-model outputs (2025-11-04, -05, -05).
+  - three successive charging-model outputs (2025-11-04, -05, -05), now frozen here.
 
   The responses show that the Worst/Average/Best scenarios, the 2/3/5/7-day charging, and the
   25-mile and all-electric rows were all added in revision 1, in answer to reviewers. That is why

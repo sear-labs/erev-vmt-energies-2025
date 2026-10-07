@@ -34,6 +34,7 @@ from erev_vmtalloc import costs, report
 
 ROOT = Path(__file__).resolve().parents[1]
 WORKBOOK = ROOT / "notebooks" / "fall-2025" / "Calculations Check_final.xlsx"
+VNOV5 = ROOT / "notebooks" / "fall-2025" / "revision-1" / "Charging Frequency Data vNov5.xlsx"
 RAW = ROOT / "data" / "raw"
 REL_TOL = 1e-6
 CHARGING_REL_TOL = 2e-5
@@ -189,3 +190,22 @@ def test_regenerated_charging_gas_equals_the_pasted_constants(chg):
         worst = max(worst, gap)
     print(f"18 regenerated values, worst rel gap {worst:.1e}")
     assert worst < CHARGING_REL_TOL
+
+
+def test_charging_values_were_pasted_from_the_nov5_file():
+    """The workbook's 'Calcs by Charge' gas VMT is the authors' 2025-11-05 charging file.
+
+    All 24 values, read from notebooks/fall-2025/revision-1/, equal
+    data/raw/charging_gas_vmt_2023.csv bit for bit, and that file stands on the same
+    3,392.497 B total. The script that wrote it does not survive; the recovered rule
+    (test_regenerated_charging_gas_equals_the_pasted_constants) reproduces it.
+    """
+    rows = list(openpyxl.load_workbook(VNOV5, data_only=True).active.iter_rows(values_only=True))
+    assert rows[0][1:] == ("range", "charges_per_week", "pct_ev_vmt", "ev_vmt_b",
+                           "gas_vmt_b", "total_vmt_b")
+    nov5 = {(cpw, rng): gas for _, rng, cpw, _, _, gas, _ in rows[1:]}
+    assert {total for *_, total in rows[1:]} == {3392.497}
+    extract = costs.load_charging_gas_vmt(RAW, "charging_gas_vmt_2023.csv")
+    assert len(nov5) == len(extract) == 24
+    for row in extract.itertuples():
+        assert nov5[(row.charges_per_week, row.electric_range_mi)] == row.gas_vmt_billion
