@@ -1,0 +1,441 @@
+figure,series,x,y
+2,"Worst installed battery (TWh)",25,2.221907043103448
+2,"Worst installed battery (TWh)",50,4.443814086206896
+2,"Worst installed battery (TWh)",75,6.665721129310344
+2,"Worst installed battery (TWh)",100,8.887628172413793
+2,"Worst installed battery (TWh)",125,11.109535215517242
+2,"Worst installed battery (TWh)",150,13.331442258620688
+2,"Average installed battery (TWh)",25,1.7898695625
+2,"Average installed battery (TWh)",50,3.579739125
+2,"Average installed battery (TWh)",75,5.3696086875
+2,"Average installed battery (TWh)",100,7.15947825
+2,"Average installed battery (TWh)",125,8.949347812500001
+2,"Average installed battery (TWh)",150,10.739217375
+2,"Best installed battery (TWh)",25,1.5341739107142858
+2,"Best installed battery (TWh)",50,3.0683478214285715
+2,"Best installed battery (TWh)",75,4.602521732142857
+2,"Best installed battery (TWh)",100,6.136695642857143
+2,"Best installed battery (TWh)",125,7.670869553571428
+2,"Best installed battery (TWh)",150,9.205043464285714
+3,"Worst battery capital cost ($T)",25,0.33328605646551723
+3,"Worst battery capital cost ($T)",50,0.6665721129310345
+3,"Worst battery capital cost ($T)",75,0.9998581693965516
+3,"Worst battery capital cost ($T)",100,1.333144225862069
+3,"Worst battery capital cost ($T)",125,1.6664302823275863
+3,"Worst battery capital cost ($T)",150,1.9997163387931032
+3,"Average battery capital cost ($T)",25,0.20583499968750002
+3,"Average battery capital cost ($T)",50,0.41166999937500004
+3,"Average battery capital cost ($T)",75,0.6175049990625
+3,"Average battery capital cost ($T)",100,0.8233399987500001
+3,"Average battery capital cost ($T)",125,1.0291749984375
+3,"Average battery capital cost ($T)",150,1.235009998125
+3,"Best battery capital cost ($T)",25,0.11506304330357144
+3,"Best battery capital cost ($T)",50,0.23012608660714287
+3,"Best battery capital cost ($T)",75,0.34518912991071427
+3,"Best battery capital cost ($T)",100,0.46025217321428574
+3,"Best battery capital cost ($T)",125,0.5753152165178571
+3,"Best battery capital cost ($T)",150,0.6903782598214285
+5,"7/week electric VMT (T)",25,2.013737000980458
+5,"7/week electric VMT (T)",50,2.48611899032353
+5,"7/week electric VMT (T)",75,2.652415559084027
+5,"7/week electric VMT (T)",100,2.818712127844524
+5,"7/week electric VMT (T)",125,2.881749836906484
+5,"7/week electric VMT (T)",150,2.9447875459684436
+5,"7/week gas VMT (T)",25,1.3787599990195418
+5,"7/week gas VMT (T)",50,0.90637800967647
+5,"7/week gas VMT (T)",75,0.740081440915973
+5,"7/week gas VMT (T)",100,0.5737848721554757
+5,"7/week gas VMT (T)",125,0.5107471630935159
+5,"7/week gas VMT (T)",150,0.44770945403155604
+5,"5/week electric VMT (T)",25,1.721132107192683
+5,"5/week electric VMT (T)",50,2.132112454493588
+5,"5/week electric VMT (T)",75,2.282920194299305
+5,"5/week electric VMT (T)",100,2.4337279341050215
+5,"5/week electric VMT (T)",125,2.4967656431669814
+5,"5/week electric VMT (T)",150,2.559803352228941
+5,"5/week gas VMT (T)",25,1.6713648928073166
+5,"5/week gas VMT (T)",50,1.2603845455064118
+5,"5/week gas VMT (T)",75,1.1095768057006952
+5,"5/week gas VMT (T)",100,0.9587690658949786
+5,"5/week gas VMT (T)",125,0.8957313568330187
+5,"5/week gas VMT (T)",150,0.8326936477710589
+5,"3/week electric VMT (T)",25,1.4285272134049078
+5,"3/week electric VMT (T)",50,1.778105918663647
+5,"3/week electric VMT (T)",75,1.9134248295145828
+5,"3/week electric VMT (T)",100,2.0487437403655178
+5,"3/week electric VMT (T)",125,2.111781449427479
+5,"3/week electric VMT (T)",150,2.1748191584894374
+5,"3/week gas VMT (T)",25,1.9639697865950918
+5,"3/week gas VMT (T)",50,1.6143910813363531
+5,"3/week gas VMT (T)",75,1.4790721704854173
+5,"3/week gas VMT (T)",100,1.343753259634482
+5,"3/week gas VMT (T)",125,1.2807155505725207
+5,"3/week gas VMT (T)",150,1.2176778415105618
+5,"2/week electric VMT (T)",25,1.2334572842130578
+5,"2/week electric VMT (T)",50,1.5421015614436857
+5,"2/week electric VMT (T)",75,1.6670945863247677
+5,"2/week electric VMT (T)",100,1.79208761120585
+5,"2/week electric VMT (T)",125,1.85512532026781
+5,"2/week electric VMT (T)",150,1.9181630293297698
+5,"2/week gas VMT (T)",25,2.1590397157869416
+5,"2/week gas VMT (T)",50,1.850395438556314
+5,"2/week gas VMT (T)",75,1.725402413675232
+5,"2/week gas VMT (T)",100,1.60040938879415
+5,"2/week gas VMT (T)",125,1.5373716797321901
+5,"2/week gas VMT (T)",150,1.4743339706702299
+5,"dots: electric VMT if charged before each trip (T)",25,2.013737000980458
+5,"dots: electric VMT if charged before each trip (T)",50,2.48611899032353
+5,"dots: electric VMT if charged before each trip (T)",75,2.652415559084027
+5,"dots: electric VMT if charged before each trip (T)",100,2.818712127844524
+5,"dots: electric VMT if charged before each trip (T)",125,2.881749836906484
+5,"dots: electric VMT if charged before each trip (T)",150,2.9447875459684436
+6,"Worst gas CO2 (Bt)",ICE,0.8055490666666667
+6,"Worst gas CO2 (Bt)",25,0.3273871943026666
+6,"Worst gas CO2 (Bt)",50,0.21522076466
+6,"Worst gas CO2 (Bt)",75,0.1757335162488889
+6,"Worst gas CO2 (Bt)",100,0.1362462675908889
+6,"Worst gas CO2 (Bt)",125,0.12127790507066667
+6,"Worst gas CO2 (Bt)",150,0.10630954230355555
+6,"Worst gas CO2 (Bt)",EV,0.0
+6,"Worst grid CO2 (Bt)",ICE,0.0
+6,"Worst grid CO2 (Bt)",25,0.4768410242110346
+6,"Worst grid CO2 (Bt)",50,0.5886976114551723
+6,"Worst grid CO2 (Bt)",75,0.6280757824551724
+6,"Worst grid CO2 (Bt)",100,0.6674539537013795
+6,"Worst grid CO2 (Bt)",125,0.6823809684372415
+6,"Worst grid CO2 (Bt)",150,0.6973079834193106
+6,"Worst grid CO2 (Bt)",EV,0.8033238620689656
+6,"Average gas CO2 (Bt)",ICE,1.098476
+6,"Average gas CO2 (Bt)",25,0.44643708313999997
+6,"Average gas CO2 (Bt)",50,0.2934828609
+6,"Average gas CO2 (Bt)",75,0.23963661306666667
+6,"Average gas CO2 (Bt)",100,0.18579036489666667
+6,"Average gas CO2 (Bt)",125,0.16537896146
+6,"Average gas CO2 (Bt)",150,0.14496755768666666
+6,"Average gas CO2 (Bt)",EV,0.0
+6,"Average grid CO2 (Bt)",ICE,0.0
+6,"Average grid CO2 (Bt)",25,0.1872190949400001
+6,"Average grid CO2 (Bt)",50,0.2311366439
+6,"Average grid CO2 (Bt)",75,0.24659744773333325
+6,"Average grid CO2 (Bt)",100,0.2620582516633334
+6,"Average grid CO2 (Bt)",125,0.26791895166
+6,"Average grid CO2 (Bt)",150,0.2737796517533333
+6,"Average grid CO2 (Bt)",EV,0.315404
+6,"Best gas CO2 (Bt)",ICE,1.6110981333333334
+6,"Best gas CO2 (Bt)",25,0.6547743886053332
+6,"Best gas CO2 (Bt)",50,0.43044152932
+6,"Best gas CO2 (Bt)",75,0.3514670324977778
+6,"Best gas CO2 (Bt)",100,0.2724925351817778
+6,"Best gas CO2 (Bt)",125,0.24255581014133334
+6,"Best gas CO2 (Bt)",150,0.2126190846071111
+6,"Best gas CO2 (Bt)",EV,0.0
+6,"Best grid CO2 (Bt)",ICE,0.0
+6,"Best grid CO2 (Bt)",25,0.0576413469642858
+6,"Best grid CO2 (Bt)",50,0.07116275982142861
+6,"Best grid CO2 (Bt)",75,0.0759228595238095
+6,"Best grid CO2 (Bt)",100,0.08068295925595237
+6,"Best grid CO2 (Bt)",125,0.08248736196428563
+6,"Best grid CO2 (Bt)",150,0.08429176470238087
+6,"Best grid CO2 (Bt)",EV,0.09710714285714284
+7,"ICE gas CO2 (Bt)",ICE,1.1421406566666668
+7,"7/week gas CO2 (Bt)",25,0.4641825330032458
+7,"7/week grid CO2 (Bt)",25,0.19466124342811092
+7,"5/week gas CO2 (Bt)",25,0.56269284724513
+7,"5/week grid CO2 (Bt)",25,0.16637610369529265
+7,"3/week gas CO2 (Bt)",25,0.6612031614870143
+7,"3/week grid CO2 (Bt)",25,0.13809096396247444
+7,"2/week gas CO2 (Bt)",25,0.7268767043149371
+7,"2/week grid CO2 (Bt)",25,0.1192342041405956
+7,"7/week gas CO2 (Bt)",50,0.30514726325774494
+7,"7/week grid CO2 (Bt)",50,0.24032483573127456
+7,"5/week gas CO2 (Bt)",50,0.42432946365382535
+7,"5/week grid CO2 (Bt)",50,0.20610420393438017
+7,"3/week gas CO2 (Bt)",50,0.5435116640499056
+7,"3/week grid CO2 (Bt)",50,0.17188357213748584
+7,"2/week gas CO2 (Bt)",50,0.6229664643139592
+7,"2/week grid CO2 (Bt)",50,0.14906981760622295
+7,"7/week gas CO2 (Bt)",75,0.2491607517750442
+7,"7/week grid CO2 (Bt)",75,0.2564001707114559
+7,"5/week gas CO2 (Bt)",75,0.3735575245859007
+7,"5/week grid CO2 (Bt)",75,0.2206822854489328
+7,"3/week gas CO2 (Bt)",75,0.4979542973967571
+7,"3/week grid CO2 (Bt)",75,0.18496440018640958
+7,"2/week gas CO2 (Bt)",75,0.5808854792706616
+7,"2/week grid CO2 (Bt)",75,0.16115247667806087
+7,"7/week gas CO2 (Bt)",100,0.19317424029234354
+7,"7/week grid CO2 (Bt)",100,0.27247550569163725
+7,"5/week gas CO2 (Bt)",100,0.3227855855179761
+7,"5/week grid CO2 (Bt)",100,0.2352603669634854
+7,"3/week gas CO2 (Bt)",100,0.4523969307436089
+7,"3/week grid CO2 (Bt)",100,0.19804522823533327
+7,"2/week gas CO2 (Bt)",100,0.5388044942273638
+7,"2/week grid CO2 (Bt)",100,0.1732351357498988
+7,"7/week gas CO2 (Bt)",125,0.1719515449081504
+7,"7/week grid CO2 (Bt)",125,0.27856915090096
+7,"5/week gas CO2 (Bt)",125,0.301562890133783
+7,"5/week grid CO2 (Bt)",125,0.24135401217280816
+7,"3/week gas CO2 (Bt)",125,0.4311742353594154
+7,"3/week grid CO2 (Bt)",125,0.20413887344465625
+7,"2/week gas CO2 (Bt)",125,0.5175817988431707
+7,"2/week grid CO2 (Bt)",125,0.17932878095922156
+7,"7/week gas CO2 (Bt)",150,0.15072884952395726
+7,"7/week grid CO2 (Bt)",150,0.28466279611028283
+7,"5/week gas CO2 (Bt)",150,0.28034019474958977
+7,"5/week grid CO2 (Bt)",150,0.24744765738213098
+7,"3/week gas CO2 (Bt)",150,0.4099515399752226
+7,"3/week grid CO2 (Bt)",150,0.21023251865397896
+7,"2/week gas CO2 (Bt)",150,0.4963591034589775
+7,"2/week grid CO2 (Bt)",150,0.18542242616854432
+7,"EV grid CO2 (Bt)",EV,0.3279413766666666
+8,"Worst CAPEX per EV mile ($)",25,0.01720852893521631
+8,"Worst CAPEX per EV mile ($)",50,0.02787758062191021
+8,"Worst CAPEX per EV mile ($)",75,0.039194629653879876
+8,"Worst CAPEX per EV mile ($)",100,0.04917632155523966
+8,"Worst CAPEX per EV mile ($)",125,0.060125743112576645
+8,"Worst CAPEX per EV mile ($)",150,0.07060638418963378
+8,"Worst electric VMT (T)",25,1.9367492580000003
+8,"Worst electric VMT (T)",50,2.3910687299999998
+8,"Worst electric VMT (T)",75,2.55100808
+8,"Worst electric VMT (T)",100,2.710947431
+8,"Worst electric VMT (T)",125,2.771575362
+8,"Worst electric VMT (T)",150,2.832203294
+8,"Average CAPEX per EV mile ($)",25,0.01062785999980489
+8,"Average CAPEX per EV mile ($)",50,0.017216987291494547
+8,"Average CAPEX per EV mile ($)",75,0.024206312943646183
+8,"Average CAPEX per EV mile ($)",100,0.030370931923467463
+8,"Average CAPEX per EV mile ($)",125,0.037133213570452434
+8,"Average CAPEX per EV mile ($)",150,0.043605979865264564
+8,"Average electric VMT (T)",25,1.9367492580000003
+8,"Average electric VMT (T)",50,2.3910687299999998
+8,"Average electric VMT (T)",75,2.55100808
+8,"Average electric VMT (T)",100,2.710947431
+8,"Average electric VMT (T)",125,2.771575362
+8,"Average electric VMT (T)",150,2.832203294
+8,"Best CAPEX per EV mile ($)",25,0.005941039751443727
+8,"Best CAPEX per EV mile ($)",50,0.009624402833754715
+8,"Best CAPEX per EV mile ($)",75,0.013531479285268051
+8,"Best CAPEX per EV mile ($)",100,0.016977539584547025
+8,"Best CAPEX per EV mile ($)",125,0.02075769702696098
+8,"Best CAPEX per EV mile ($)",150,0.02437601358927833
+8,"Best electric VMT (T)",25,1.9367492580000003
+8,"Best electric VMT (T)",50,2.3910687299999998
+8,"Best electric VMT (T)",75,2.55100808
+8,"Best electric VMT (T)",100,2.710947431
+8,"Best electric VMT (T)",125,2.771575362
+8,"Best electric VMT (T)",150,2.832203294
+9,"7/week CAPEX per EV mile ($)",25,0.010221543309145242
+9,"7/week CAPEX per EV mile ($)",50,0.016558740791462585
+9,"7/week CAPEX per EV mile ($)",75,0.023280854199020998
+9,"7/week CAPEX per EV mile ($)",100,0.029209793742917985
+9,"7/week CAPEX per EV mile ($)",125,0.03571354408550272
+9,"7/week CAPEX per EV mile ($)",150,0.04193884885908963
+9,"7/week electric VMT (T)",25,2.013737000980458
+9,"7/week electric VMT (T)",50,2.48611899032353
+9,"7/week electric VMT (T)",75,2.652415559084027
+9,"7/week electric VMT (T)",100,2.818712127844524
+9,"7/week electric VMT (T)",125,2.881749836906484
+9,"7/week electric VMT (T)",150,2.9447875459684436
+9,"5/week CAPEX per EV mile ($)",25,0.01195927952464003
+9,"5/week CAPEX per EV mile ($)",50,0.019308080983597955
+9,"5/week CAPEX per EV mile ($)",75,0.02704890870055273
+9,"5/week CAPEX per EV mile ($)",100,0.033830404262207514
+9,"5/week CAPEX per EV mile ($)",125,0.04122032843787694
+9,"5/week CAPEX per EV mile ($)",150,0.048246284115911434
+9,"5/week electric VMT (T)",25,1.721132107192683
+9,"5/week electric VMT (T)",50,2.132112454493588
+9,"5/week electric VMT (T)",75,2.282920194299305
+9,"5/week electric VMT (T)",100,2.4337279341050215
+9,"5/week electric VMT (T)",125,2.4967656431669814
+9,"5/week electric VMT (T)",150,2.559803352228941
+9,"3/week CAPEX per EV mile ($)",25,0.014408895942338431
+9,"3/week CAPEX per EV mile ($)",50,0.023152164055805783
+9,"3/week CAPEX per EV mile ($)",75,0.03227223717062117
+9,"3/week CAPEX per EV mile ($)",100,0.04018755408634501
+9,"3/week CAPEX per EV mile ($)",125,0.04873491992822068
+9,"3/week CAPEX per EV mile ($)",150,0.05678679044665028
+9,"3/week electric VMT (T)",25,1.4285272134049078
+9,"3/week electric VMT (T)",50,1.778105918663647
+9,"3/week electric VMT (T)",75,1.9134248295145828
+9,"3/week electric VMT (T)",100,2.0487437403655178
+9,"3/week electric VMT (T)",125,2.111781449427479
+9,"3/week electric VMT (T)",150,2.1748191584894374
+9,"2/week CAPEX per EV mile ($)",25,0.01668764717854191
+9,"2/week CAPEX per EV mile ($)",50,0.026695388271937327
+9,"2/week CAPEX per EV mile ($)",75,0.03704078965452314
+9,"2/week CAPEX per EV mile ($)",100,0.04594306626538173
+9,"2/week CAPEX per EV mile ($)",125,0.05547738404481085
+9,"2/week CAPEX per EV mile ($)",150,0.06438503814540351
+9,"2/week electric VMT (T)",25,1.2334572842130578
+9,"2/week electric VMT (T)",50,1.5421015614436857
+9,"2/week electric VMT (T)",75,1.6670945863247677
+9,"2/week electric VMT (T)",100,1.79208761120585
+9,"2/week electric VMT (T)",125,1.85512532026781
+9,"2/week electric VMT (T)",150,1.9181630293297698
+10,"Worst CAPEX per ton CO2 saved ($)",25,25232.73062972797
+10,"Worst CAPEX per ton CO2 saved ($)",50,40876.67720403434
+10,"Worst CAPEX per ton CO2 saved ($)",75,57470.777189116256
+10,"Worst CAPEX per ton CO2 saved ($)",100,72106.85351639472
+10,"Worst CAPEX per ton CO2 saved ($)",125,88161.904226868
+10,"Worst CAPEX per ton CO2 saved ($)",150,103529.58580614824
+10,"Worst CO2 saved (Mt)",25,1.3208481529654819
+10,"Worst CO2 saved (Mt)",50,1.6306905514943537
+10,"Worst CO2 saved (Mt)",75,1.739767962605356
+10,"Worst CO2 saved (Mt)",100,1.8488453743983655
+10,"Worst CO2 saved (Mt)",125,1.8901931587586205
+10,"Worst CO2 saved (Mt)",150,1.9315409438007691
+10,"Average CAPEX per ton CO2 saved ($)",25,44.282749999187025
+10,"Average CAPEX per ton CO2 saved ($)",50,71.73744704789392
+10,"Average CAPEX per ton CO2 saved ($)",75,100.85963726519242
+10,"Average CAPEX per ton CO2 saved ($)",100,126.54554968111442
+10,"Average CAPEX per ton CO2 saved ($)",125,154.72172321021844
+10,"Average CAPEX per ton CO2 saved ($)",150,181.69158277193569
+10,"Average CO2 saved (Mt)",25,464.8198219200001
+10,"Average CO2 saved (Mt)",50,573.8564952000002
+10,"Average CO2 saved (Mt)",75,612.2419392
+10,"Average CO2 saved (Mt)",100,650.6273834400001
+10,"Average CO2 saved (Mt)",125,665.1780868800001
+10,"Average CO2 saved (Mt)",150,679.7287905600001
+10,"Best CAPEX per ton CO2 saved ($)",25,12.803526984604892
+10,"Best CAPEX per ton CO2 saved ($)",50,20.74153793748664
+10,"Best CAPEX per ton CO2 saved ($)",75,29.161673279235355
+10,"Best CAPEX per ton CO2 saved ($)",100,36.58827331531018
+10,"Best CAPEX per ton CO2 saved ($)",125,44.73488566683343
+10,"Best CAPEX per ton CO2 saved ($)",150,52.53271494969845
+10,"Best CO2 saved (Mt)",25,898.6823977637144
+10,"Best CO2 saved (Mt)",50,1109.4938441919048
+10,"Best CO2 saved (Mt)",75,1183.7082413117462
+10,"Best CO2 saved (Mt)",100,1257.9226388956033
+10,"Best CO2 saved (Mt)",125,1286.0549612277143
+10,"Best CO2 saved (Mt)",150,1314.1872840238414
+11,"7/week CAPEX per ton CO2 saved ($)",25,46.81981634937215
+11,"7/week CAPEX per ton CO2 saved ($)",50,74.44251272412377
+11,"7/week CAPEX per ton CO2 saved ($)",75,104.14729233267646
+11,"7/week CAPEX per ton CO2 saved ($)",100,130.1052213818484
+11,"7/week CAPEX per ton CO2 saved ($)",125,158.8342578231757
+11,"7/week CAPEX per ton CO2 saved ($)",150,186.25232068795935
+11,"7/week CO2 saved (Mt)",25,439.63222356864344
+11,"7/week CO2 saved (Mt)",50,553.0039010109806
+11,"7/week CO2 saved (Mt)",75,592.9150775135
+11,"7/week CO2 saved (Mt)",100,632.8262540160192
+11,"7/week CO2 saved (Mt)",125,647.9553041908896
+11,"7/week CO2 saved (Mt)",150,663.08435436576
+11,"5/week CAPEX per ton CO2 saved ($)",25,55.72037680696862
+11,"5/week CAPEX per ton CO2 saved ($)",50,87.95571914482368
+11,"5/week CAPEX per ton CO2 saved ($)",75,122.46344299586234
+11,"5/week CAPEX per ton CO2 saved ($)",100,152.3490417548918
+11,"5/week CAPEX per ton CO2 saved ($)",125,185.2503185908515
+11,"5/week CAPEX per ton CO2 saved ($)",150,216.40715734822882
+11,"5/week CO2 saved (Mt)",25,369.4070490595775
+11,"5/week CO2 saved (Mt)",50,468.0423324117946
+11,"5/week CO2 saved (Mt)",75,504.2361899651667
+11,"5/week CO2 saved (Mt)",100,540.4300475185387
+11,"5/week CO2 saved (Mt)",125,555.559097693409
+11,"5/week CO2 saved (Mt)",150,570.6881478682793
+11,"3/week CAPEX per ton CO2 saved ($)",25,68.79928805738818
+11,"3/week CAPEX per ton CO2 saved ($)",50,107.46297863611247
+11,"3/week CAPEX per ton CO2 saved ($)",75,148.596835014368
+11,"3/week CAPEX per ton CO2 saved ($)",100,183.76736830272222
+11,"3/week CAPEX per ton CO2 saved ($)",125,222.2058411847454
+11,"3/week CAPEX per ton CO2 saved ($)",150,258.21258760610215
+11,"3/week CO2 saved (Mt)",25,299.18187455051134
+11,"3/week CO2 saved (Mt)",50,383.08076381260867
+11,"3/week CO2 saved (Mt)",75,415.5573024168333
+11,"3/week CO2 saved (Mt)",100,448.0338410210578
+11,"3/week CO2 saved (Mt)",125,463.1628911959285
+11,"3/week CO2 saved (Mt)",150,478.29194137079855
+11,"2/week CAPEX per ton CO2 saved ($)",25,81.56238980113909
+11,"2/week CAPEX per ton CO2 saved ($)",50,126.10904144769
+11,"2/week CAPEX per ton CO2 saved ($)",75,173.2432913288192
+11,"2/week CAPEX per ton CO2 saved ($)",100,213.05965551367635
+11,"2/week CAPEX per ton CO2 saved ($)",125,256.290742846097
+11,"2/week CAPEX per ton CO2 saved ($)",150,296.3826222654309
+11,"2/week CO2 saved (Mt)",25,252.36509154446742
+11,"2/week CO2 saved (Mt)",50,326.439718079818
+11,"2/week CO2 saved (Mt)",75,356.43804405127776
+11,"2/week CO2 saved (Mt)",100,386.4363700227375
+11,"2/week CO2 saved (Mt)",125,401.56542019760786
+11,"2/week CO2 saved (Mt)",150,416.69447037247824
+12,"Worst gas OPEX ($B)",25,73.66948566666666
+12,"Worst gas OPEX ($B)",50,48.429515
+12,"Worst gas OPEX ($B)",75,39.543995555555554
+12,"Worst gas OPEX ($B)",100,30.658476055555557
+12,"Worst gas OPEX ($B)",125,27.29025766666667
+12,"Worst gas OPEX ($B)",150,23.92203922222222
+12,"Worst electricity OPEX ($B)",25,267.13782868965524
+12,"Worst electricity OPEX ($B)",50,329.80258344827587
+12,"Worst electricity OPEX ($B)",75,351.8631834482759
+12,"Worst electricity OPEX ($B)",100,373.9237835862069
+12,"Worst electricity OPEX ($B)",125,382.2862568275862
+12,"Worst electricity OPEX ($B)",150,390.64873020689663
+12,"Average gas OPEX ($B)",25,150.6875843181818
+12,"Average gas OPEX ($B)",50,99.06037159090909
+12,"Average gas OPEX ($B)",75,80.88544545454546
+12,"Average gas OPEX ($B)",100,62.710519204545456
+12,"Average gas OPEX ($B)",125,55.8209815909091
+12,"Average gas OPEX ($B)",150,48.93144386363636
+12,"Average electricity OPEX ($B)",25,134.49647625000006
+12,"Average electricity OPEX ($B)",50,166.04643958333332
+12,"Average electricity OPEX ($B)",75,177.15333888888887
+12,"Average electricity OPEX ($B)",100,188.26023826388888
+12,"Average electricity OPEX ($B)",125,192.47051125000002
+12,"Average electricity OPEX ($B)",150,196.68078430555556
+12,"Best gas OPEX ($B)",25,368.3474283333333
+12,"Best gas OPEX ($B)",50,242.14757500000002
+12,"Best gas OPEX ($B)",75,197.71997777777779
+12,"Best gas OPEX ($B)",100,153.2923802777778
+12,"Best gas OPEX ($B)",125,136.45128833333334
+12,"Best gas OPEX ($B)",150,119.61019611111111
+12,"Best electricity OPEX ($B)",25,69.16961635714284
+12,"Best electricity OPEX ($B)",50,85.39531178571428
+12,"Best electricity OPEX ($B)",75,91.10743142857143
+12,"Best electricity OPEX ($B)",100,96.81955110714284
+12,"Best electricity OPEX ($B)",125,98.98483435714286
+12,"Best electricity OPEX ($B)",150,101.15011764285714
+13,"7/week gas OPEX ($B)",25,156.67727261585705
+13,"7/week gas OPEX ($B)",50,102.99750109959888
+13,"7/week gas OPEX ($B)",75,84.10016374045148
+13,"7/week gas OPEX ($B)",100,65.20282638130408
+13,"7/week gas OPEX ($B)",125,58.03945035153592
+13,"7/week gas OPEX ($B)",150,50.876074321767746
+13,"7/week electricity OPEX ($B)",25,139.8428472903096
+13,"7/week electricity OPEX ($B)",50,172.6471521058007
+13,"7/week electricity OPEX ($B)",75,184.19552493639074
+13,"7/week electricity OPEX ($B)",100,195.74389776698084
+13,"7/week electricity OPEX ($B)",125,200.12151645183914
+13,"7/week electricity OPEX ($B)",150,204.49913513669745
+13,"5/week gas OPEX ($B)",25,189.9278287281042
+13,"5/week gas OPEX ($B)",50,143.22551653481955
+13,"5/week gas OPEX ($B)",75,126.08827337507898
+13,"5/week gas OPEX ($B)",100,108.95103021533845
+13,"5/week gas OPEX ($B)",125,101.78765418557032
+13,"5/week gas OPEX ($B)",150,94.62427815580213
+13,"5/week electricity OPEX ($B)",25,119.52306299949186
+13,"5/week electricity OPEX ($B)",50,148.06336489538802
+13,"5/week electricity OPEX ($B)",75,158.53612460411836
+13,"5/week electricity OPEX ($B)",100,169.0088843128487
+13,"5/week electricity OPEX ($B)",125,173.38650299770705
+13,"5/week electricity OPEX ($B)",150,177.76412168256536
+13,"3/week gas OPEX ($B)",25,223.17838484035138
+13,"3/week gas OPEX ($B)",50,183.45353197004013
+13,"3/week gas OPEX ($B)",75,168.0763830097065
+13,"3/week gas OPEX ($B)",100,152.69923404937296
+13,"3/week gas OPEX ($B)",125,145.53585801960463
+13,"3/week gas OPEX ($B)",150,138.37248198983661
+13,"3/week electricity OPEX ($B)",25,99.20327870867413
+13,"3/week electricity OPEX ($B)",50,123.47957768497548
+13,"3/week electricity OPEX ($B)",75,132.87672427184606
+13,"3/week electricity OPEX ($B)",100,142.27387085871652
+13,"3/week electricity OPEX ($B)",125,146.65148954357488
+13,"3/week electricity OPEX ($B)",150,151.02910822843313
+13,"2/week gas OPEX ($B)",25,245.34542224851612
+13,"2/week gas OPEX ($B)",50,210.27220892685386
+13,"2/week gas OPEX ($B)",75,196.06845609945822
+13,"2/week gas OPEX ($B)",100,181.86470327206248
+13,"2/week gas OPEX ($B)",125,174.70132724229433
+13,"2/week gas OPEX ($B)",150,167.53795121252614
+13,"2/week electricity OPEX ($B)",25,85.65675584812902
+13,"2/week electricity OPEX ($B)",50,107.09038621136705
+13,"2/week electricity OPEX ($B)",75,115.7704573836644
+13,"2/week electricity OPEX ($B)",100,124.4505285559618
+13,"2/week electricity OPEX ($B)",125,128.82814724082016
+13,"2/week electricity OPEX ($B)",150,133.20576592567846

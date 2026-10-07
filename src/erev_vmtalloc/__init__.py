@@ -12,4 +12,4 @@ here and the divergence is recorded in the README.
 
 __version__ = "1.0.0"
 
-__all__ = ["allocation", "config", "metrics", "report", "scenarios", "sources"]
+__all__ = ["allocation", "config", "costs", "metrics", "report", "scenarios", "sources"]

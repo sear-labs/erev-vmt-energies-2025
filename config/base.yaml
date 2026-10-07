@@ -120,3 +120,88 @@ charging:
 # Scenarios reported in the paper. Base_EachTrip is the unconstrained case:
 # every trip starts with a full battery.
 scenarios: [Base_EachTrip, Low, Normal, More]
+
+# ---------------------------------------------------------------------------
+# Tables 4-6 and Figures 2-3, 5-13: the Fall 2025 workbook's model.
+#
+# Everything below was a cell in notebooks/fall-2025/Calculations Check_final.xlsx
+# ('Calcs by Scenario' rows 25-48 and 'Calcs by Charge'), where the published tables
+# and figures were computed. src/erev_vmtalloc/costs.py implements those formulas, and
+# tests/test_workbook_agreement.py checks the result against the workbook's cached
+# values cell by cell. Several values here differ from what the article PRINTS in
+# Table 4; each is marked, and the README lists them under "What reproduces, and
+# what doesn't". They are kept as the workbook had them because the published
+# Tables 5-6 and Figures were computed with them.
+paper_scenarios:
+  # Ranges in Tables 5-6. 25 miles is in the tables but not in `ranges` above.
+  ranges: [25, 50, 75, 100, 125, 150]
+
+  # Battery range of the all-electric "EV" row (workbook S32 = 300 / mi_per_kWh).
+  ev_row_range_mi: 300
+
+  # Vehicles over which battery capacity is installed: the 2022 light-duty count
+  # (workbook 'Calcs by Scenario'!T13). Table 4 prints "Vehicle Count 286.1 M
+  # (Equation (1))", which Tables 5-6 did NOT use.
+  vehicles: 257741217
+
+  # Capital cost per kg or per mile is spread over this many years (workbook Y21).
+  lifespan_years: 10
+
+  # US households, millions (Table 4; workbook 'Trip Bin Distance'!H2). Table 3's
+  # weekly trips per household divide by it.
+  households_millions: 131.4
+
+  # kg CO2 per gallon of gasoline. Table 4 prints 8.887; every row of the workbook
+  # and every gas-emissions value in Table 5 uses 8.888.
+  kg_co2_per_gal: 8.888
+
+  # Table 4 prints fuel economy, grid intensity and electricity price in ascending
+  # order under a "Worst/Average/Best" heading; for those three rows the printed
+  # order is Best/Average/Worst. These are the values each scenario actually used.
+  scenarios:
+    Worst:
+      mpg: 36.0
+      mi_per_kwh: 2.9
+      grid_g_per_kwh: 714.0
+      pack_usd_per_kwh: 150.0   # Not in Table 4 at all; the text gives only 115.
+      gas_usd_per_gal: 2.0
+      elec_usd_per_kwh: 0.40
+    Average:
+      mpg: 26.4
+      mi_per_kwh: 3.6
+      grid_g_per_kwh: 348.0
+      pack_usd_per_kwh: 115.0
+      gas_usd_per_gal: 3.0
+      elec_usd_per_kwh: 0.25
+      # The workbook's Average "EV" row (cell AB40) holds 0.15, where every other
+      # Average row holds 0.25. Table 6's Average EV operating cost (135.95, $0.042
+      # per mile) was computed with it, and $0.042 matches the low end of the
+      # conclusions' "4-8 cents/mi". Delete this line for the consistent value.
+      elec_usd_per_kwh_ev_row: 0.15
+    Best:
+      mpg: 18.0
+      mi_per_kwh: 4.2
+      grid_g_per_kwh: 125.0
+      pack_usd_per_kwh: 75.0    # Not in Table 4 at all.
+      gas_usd_per_gal: 5.0
+      elec_usd_per_kwh: 0.15
+
+  # Charging frequency (Figures 5, 7, 9, 11, 13): Average scenario, nights per week.
+  charging:
+    frequencies: [7, 5, 3, 2]
+    scenario: Average
+    # Which annual VMT the charging results stand on.
+    #
+    #   table1_printed  what the published figures used: the sum of Table 1's printed
+    #                   VMT column, 3,392.497 B. That is the fit before normalisation
+    #                   to FHWA (3,385.0 B), plus the 0-1 mile bin's display rounding
+    #                   from 0.25 to 0.3 miles (README, "Stated residuals" 3 and 4).
+    #   normalized      what Tables 2-3 and 5-6 use: FHWA's 3,262.8 B
+    #
+    # The published figures mix the two: their CO2 and cost savings subtract an
+    # emissions total on the 3,392.5 B base from an ICE baseline on the 3,262.8 B
+    # base. The default reproduces the paper; `normalized` gives the consistent
+    # version, scaling the pasted 5-, 3- and 2-day gas VMT by 3,262.8 / 3,392.5.
+    vmt_basis: table1_printed
+    # 5-, 3- and 2-day gas VMT: pasted constants with no surviving generator.
+    gas_vmt_file: charging_gas_vmt_2023.csv

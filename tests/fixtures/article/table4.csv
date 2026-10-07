@@ -1,0 +1,13 @@
+parameter,printed_value,source
+Average Fuel Economy,18/26.4/36 mpg,[28]
+CO2 per Gallon of Gasoline,8.887 kg/gal,"[28,29]"
+CO2 per Gallon of Diesel,10.18 kg/gal,[29]
+EV Energy Use per Mile,2.9/3.6/4.2 mi/kWh,"[30,31,32]"
+U.S. Grid CO2 Intensity (2023),125/348/714 g CO2/kWh,[33]
+Average Retail Electricity Price (U.S.),USD 0.15/USD 0.25/USD 0.40/kWh,[34]
+Average Gasoline Price (U.S.),USD 2/USD 3/USD 5/gal,[35]
+Average Miles per Vehicle per Year,"11,408 mi/veh/yr",[36]
+Average Miles per Driver per Year,"13,476 mi/driver/yr",[37]
+Households (2023),131.4 M,[37]
+Total VMT (2023),3262.80 B mi,[26]
+Vehicle Count,286.1 M,(Equation (1))

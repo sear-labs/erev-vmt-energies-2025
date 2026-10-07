@@ -111,6 +111,34 @@ def annual_table(fitted: FittedVmt) -> pd.DataFrame:
     )
 
 
+def table3(fitted: FittedVmt, electric_range: float, households_m: float, *,
+           round_trip: bool = True) -> pd.DataFrame:
+    """Table 3 of the paper: per-bin trips, weekly trips per household, and the split.
+
+    Full precision. VMT is FHWA-normalised (it sums to 3,262.8 B); the average
+    distance is shown at one decimal, as printed. Weekly trips are the annual count
+    over 52 weeks, and per household over `households_m` million households.
+    """
+    from .allocation import ev_ratio_per_bin
+
+    ratio = ev_ratio_per_bin(electric_range, fitted.mean_distance, round_trip=round_trip)
+    vmt = fitted.annual_vmt_billion_per_bin
+    trips = fitted.annual_trips_billion
+    return pd.DataFrame(
+        {
+            "Trip Distance Bin (miles)": fitted.bins,
+            "Avg Dist (mi)": np.round(fitted.mean_distance, 1),
+            "Trips (B/yr)": trips,
+            "Trips (B/wk)": trips / 52,
+            "Trips/HH/wk": trips / 52 * 1000 / households_m,
+            "VMT (B/yr)": vmt,
+            "EV VMT (B/yr)": vmt * ratio,
+            "Gas VMT (B/yr)": vmt * (1 - ratio),
+            "EV% in bin": 100 * ratio,
+        }
+    )
+
+
 def write_csv(frame: pd.DataFrame, path: Path) -> Path:
     """Write a results table with LF endings on every platform.
 
@@ -132,6 +160,121 @@ def _save(fig_dir: Path, name: str) -> Path:
     plt.savefig(path, dpi=200)
     plt.close()
     return path
+
+
+# Figures 2-3 and 5-13 of the paper, drawn from costs.figure_data (the same table that
+# tests/test_figures_reproduce.py checks against what the published figures plotted).
+# Each spec: bar groups (one series, or a (bottom, top) stacked pair), an optional
+# secondary-axis dot series per group, and the axis labels. Styling is plain on
+# purpose: the numbers are the reproduction, not the look.
+_SCEN = ["Worst", "Average", "Best"]
+_CPW = ["7/week", "5/week", "3/week", "2/week"]
+PAPER_FIGURES = {
+    2: ("Installed battery capacity vs EV range, by scenario", "Installed battery (TWh)",
+        [f"{s} installed battery (TWh)" for s in _SCEN], None, None, False),
+    3: ("Fleet battery capital cost vs EV range, by scenario", "Capital cost ($ trillion)",
+        [f"{s} battery capital cost ($T)" for s in _SCEN], None, None, False),
+    5: ("Annual VMT vs EV range, by charges per week",
+        "VMT (trillion miles): electric below, gas above",
+        [(f"{c} electric VMT (T)", f"{c} gas VMT (T)") for c in _CPW],
+        ["dots: electric VMT if charged before each trip (T)"], None, False),
+    6: ("Annual CO2 emissions vs EV range, by scenario",
+        "CO2 (billion t/yr): gas below, grid above",
+        [(f"{s} gas CO2 (Bt)", f"{s} grid CO2 (Bt)") for s in _SCEN], None, None, False),
+    7: ("Annual CO2 emissions vs EV range, by charges per week",
+        "CO2 (billion t/yr): gas below, grid above",
+        [(f"{c} gas CO2 (Bt)", f"{c} grid CO2 (Bt)") for c in _CPW], None, None, False),
+    8: ("Battery CAPEX per electric mile (10-year life), by scenario", "$ per electric mile",
+        [f"{s} CAPEX per EV mile ($)" for s in _SCEN], [f"{s} electric VMT (T)" for s in _SCEN],
+        "Electric VMT (trillion miles)", False),
+    9: ("Battery CAPEX per electric mile (10-year life), by charges per week",
+        "$ per electric mile", [f"{c} CAPEX per EV mile ($)" for c in _CPW],
+        [f"{c} electric VMT (T)" for c in _CPW], "Electric VMT (trillion miles)", False),
+    10: ("Battery CAPEX per ton CO2 saved (10-year life), by scenario", "$ per ton CO2 (log)",
+         [f"{s} CAPEX per ton CO2 saved ($)" for s in _SCEN],
+         [f"{s} CO2 saved (Mt)" for s in _SCEN],
+         "Annual CO2 saved (Mt)", True),
+    11: ("Battery CAPEX per ton CO2 saved (10-year life), by charges per week",
+         "$ per ton CO2", [f"{c} CAPEX per ton CO2 saved ($)" for c in _CPW],
+         [f"{c} CO2 saved (Mt)" for c in _CPW], "Annual CO2 saved (Mt)", False),
+    12: ("Annual operating cost vs EV range, by scenario",
+         "Operating cost ($ billion): gas below, electricity above",
+         [(f"{s} gas OPEX ($B)", f"{s} electricity OPEX ($B)") for s in _SCEN], None, None, False),
+    13: ("Annual operating cost vs EV range, by charges per week",
+         "Operating cost ($ billion): gas below, electricity above",
+         [(f"{c} gas OPEX ($B)", f"{c} electricity OPEX ($B)") for c in _CPW], None, None, False),
+}
+
+
+def write_paper_figures(figdata: pd.DataFrame, fig_dir: Path) -> list[Path]:
+    """Figures 2-3 and 5-13 from the long-format table costs.figure_data returns."""
+    fig_dir.mkdir(parents=True, exist_ok=True)
+    written = []
+    for number, (title, ylabel, groups, dots, dot_label, log) in PAPER_FIGURES.items():
+        data = figdata[figdata["figure"] == number]
+
+        def series(name, data=data, number=number):
+            s = data[data["series"] == name]
+            if s.empty:
+                raise KeyError(f"Figure {number}: no series {name!r} in figure data")
+            return s.set_index("x")["y"]
+
+        first = groups[0][0] if isinstance(groups[0], tuple) else groups[0]
+        xs = list(series(first).index)
+        if number == 7:  # the ICE and EV bars sit either side of the ranges
+            xs = ["ICE"] + xs + ["EV"]
+        width = 0.8 / len(groups)
+        fig, ax = plt.subplots(figsize=(10, 5))
+        hatches = ["", "//", "..", "xx"]
+        for k, group in enumerate(groups):
+            pos = np.arange(len(xs)) - 0.4 + width * (k + 0.5)
+            label = (group[0] if isinstance(group, tuple) else group).split(" ")[0]
+            if isinstance(group, tuple):
+                low = series(group[0]).reindex(xs).fillna(0.0).to_numpy()
+                high = series(group[1]).reindex(xs).fillna(0.0).to_numpy()
+                # Grey below, blue above, as the y label says; hatching tells groups apart
+                # without relying on colour.
+                ax.bar(pos, low, width, color="#bdbdbd", hatch=hatches[k], edgecolor="black")
+                ax.bar(pos, high, width, bottom=low, color="#4c78a8", hatch=hatches[k],
+                       edgecolor="black", label=label)
+            else:
+                ax.bar(pos, series(group).reindex(xs).to_numpy(), width, hatch=hatches[k],
+                       edgecolor="black", label=label)
+        if number == 7:
+            ax.bar([0], [series("ICE gas CO2 (Bt)").iloc[0]], 0.6, color="#bdbdbd",
+                   edgecolor="black")
+            ax.bar([len(xs) - 1], [series("EV grid CO2 (Bt)").iloc[0]], 0.6, color="#4c78a8",
+                   edgecolor="black")
+        if dots:
+            target = ax.twinx() if dot_label else ax
+            for k, name in enumerate(dots):
+                pos = np.arange(len(xs)) - 0.4 + width * (k + 0.5) if len(dots) > 1 \
+                    else np.arange(len(xs))
+                label = name.removeprefix("dots: ").split(" (")[0]
+                target.plot(pos, series(name).reindex(xs).to_numpy(), "ko", markersize=4,
+                            label=f"dots (right axis): {label}" if dot_label and k == 0
+                            else (f"dots: {label}" if k == 0 else None))
+            if dot_label:
+                target.set_ylabel(dot_label)
+                target.set_ylim(bottom=0)
+        if log:
+            ax.set_yscale("log")
+        ax.set_xticks(np.arange(len(xs)), [str(x) for x in xs])
+        ax.set_xlabel("EV range (miles)")
+        ax.set_ylabel(ylabel)
+        ax.set_title(f"Figure {number}. {title}")
+        # Legend below the axes, so it never covers a bar.
+        handles, labels = ax.get_legend_handles_labels()
+        if dots and dot_label:
+            more = target.get_legend_handles_labels()
+            handles, labels = handles + more[0], labels + more[1]
+        fig.legend(handles, labels, loc="lower center", ncols=min(len(labels), 5), fontsize=8)
+        fig.tight_layout(rect=(0, 0.07, 1, 1))
+        path = fig_dir / f"fig{number:02d}.png"
+        fig.savefig(path, dpi=200)
+        plt.close(fig)
+        written.append(path)
+    return written
 
 
 def write_figures(summary: pd.DataFrame, fig_dir: Path) -> list[Path]:
