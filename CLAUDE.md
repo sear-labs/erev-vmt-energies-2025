@@ -1,4 +1,4 @@
-# erev-data-energies-2025 conventions
+# erev-vmt-energies-2025 conventions
 
 The portable standard governs this repo. Read it before working here:
 
