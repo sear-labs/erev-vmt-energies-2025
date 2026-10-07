@@ -132,6 +132,11 @@ Against the usual rule that generated files stay out of git:
 Checked on 2026-10-07 against the article as published on mdpi.com. Every claim below is a test,
 named in brackets.
 
+**No journal correction will be issued; this section is the record.** The authors decided on
+2026-10-07 to document the disagreements here rather than correct the article. The code
+reproduces the article as printed, and where a corrected value exists, the section below names the
+`config/base.yaml` setting that gives it.
+
 ### Reproduces
 
 - **Tables 1, 5 and 6: every printed cell.** 519 cells, each the package's number rounded to the
