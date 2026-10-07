@@ -164,6 +164,10 @@ Two inputs had no surviving generator. Each was recovered from the published num
   ... would charge before" a long trip. The three shares are the rule's only free parameters. They
   come out as round numbers, but no derivation of them survives.
   [`test_regenerated_charging_gas_equals_the_pasted_constants`]
+  The file the workbook's values were pasted from does survive, in the authors' published-paper
+  folder: `Charging Frequency Data vNov5.xlsx`, written by a script on 2025-11-05. Its 24 values
+  are bit-identical to `data/raw/charging_gas_vmt_2023.csv`. The script that wrote it is not
+  there.
 - **Figure 4's weekly driving profile.** Its notebook cell reads variables the notebook never
   defines, so on its own it draws a hardcoded toy week. The inputs the published figure used are
   derived from the package's own fit. Each step reproduces a typed workbook column exactly:
@@ -186,10 +190,17 @@ Two inputs had no surviving generator. Each was recovered from the published num
 ### Doesn't reproduce
 
 - **"Up to 75% of potential electrified miles" lost below five charges a week** (conclusions).
-  Neither of the paper's two models reaches it. Nationally, the largest loss is 39%: two charges a
+  Neither of the published models reaches it. Nationally, the largest loss is 39%: two charges a
   week against seven, at 25 miles. In Figure 4's weekly simulation it is 57%. A search of every
   charging quantity found 75% only in quantities that are not lost electric miles: gas use rising
   75%, and CAPEX per ton rising 74%. [`test_up_to_75_percent_loss_does_not_regenerate`]
+
+  **Its most likely origin is an earlier model.** The sentence first appears in the authors' first
+  revision draft (2025-11-01), whose charging figure used a different model. In it, electric miles
+  are capped at charges per week × range, so two charges against seven lose 5/7 = 71% at every
+  range up to 75 miles (read from that figure: 71–72%). That model was replaced by 2025-11-05.
+  The sentence was not updated, and went to print. "Up to 75%" reads as 71% rounded up. Nothing
+  records that, so this is an inference, not a regeneration.
 - **Figure 1's VMT dots for rail, watercraft, aircraft, non-transport vehicles and pipelines.**
   They regenerate, but as the values the cell labels "placeholders (update if you have official
   values)". Those placeholders are what was published, and the regenerated figure says so in its
@@ -231,6 +242,29 @@ disagreement disappears.
 | Section 4.3, "Fleet Wh Battery Capacity per electric VMT" | "USD 1.097" | 1.097 Wh of installed battery per mile of *total* VMT; neither dollars nor per electric mile |
 | Figure 5 caption | "(B)" | the axis is in trillions |
 | Figure 6 caption | "CO2 savings" | the bars are emissions, not savings |
+| Figure 4 against Figures 5, 7, 9, 11 and 13 | one charging model | two that disagree. In Figure 4's weekly simulation, five and three charges a week lose under 1% of electric miles at 150 miles. In the published charging rule they lose 15% and 30% of short-trip electric miles. The authors' revision notes flag this ("The Calculated EV VMT for Figure 9 seems to be less than expected considering the data shown in Figure 4") |
+
+### Where these findings were checked
+
+Against the article on mdpi.com, always: its HTML tables, its text, and pixel readings of its figure
+images. Beyond the article, two sets of the authors' own records, read on 2026-10-07 and not copied
+into this repository:
+
+- **The published-paper folder.** It holds:
+  - the first submission (2025-10-31);
+  - the LaTeX of three revision drafts (2025-11-01, -05 and -16);
+  - the reviewers' comments and the authors' responses;
+  - three successive charging-model outputs (2025-11-04, -05, -05).
+
+  The responses show that the Worst/Average/Best scenarios, the 2/3/5/7-day charging, and the
+  25-mile and all-electric rows were all added in revision 1, in answer to reviewers. That is why
+  the original Python code in this repository has none of them.
+- **The lab's shared-drive project folder.** Its notes include the authors' revision checklist,
+  which flags two of the disagreements above while they were being fixed:
+  - "The 7 week charge should be close but never better than the average emissions";
+  - the Figure 4 / Figure 9 mismatch.
+
+  Both went to print. The folder's IEEE MOST notes and student write-ups predate this model.
 
 *Corrected 2026-10-07. On 2026-10-06 this section said Tables 4–6 and Figures 2–13 did not
 reproduce, because the workbook and notebook behind them weren't in the repository yet. Before that,

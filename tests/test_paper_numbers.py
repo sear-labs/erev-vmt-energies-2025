@@ -268,6 +268,10 @@ def test_up_to_75_percent_loss_does_not_regenerate(fitted, config, chg):
     profile, it is 57%. A search of every charging quantity found 75% only in things
     that are not lost electric miles: gas use rising 75% (5 a week, 125 miles), and
     CAPEX per ton rising 74% (2 a week, 25 miles). Pinned as not regenerating.
+
+    Likely origin (README): the sentence was written on 2025-11-01, against an earlier
+    model in which electric miles were capped at charges per week x range. There, two
+    charges against seven lose 1 - 2/7 = 71%.
     """
     ev = chg.pivot(index="Vehicle Type", columns="Charges / week", values="Electric VMT (B)")
     national = float((1 - ev[[3, 2]].min(axis=1) / ev[7]).max())
@@ -284,3 +288,25 @@ def test_up_to_75_percent_loss_does_not_regenerate(fitted, config, chg):
           f"Figure 4's weekly simulation {100 * weekly:.1f}%")
     assert 0.35 < national < 0.45
     assert 0.50 < weekly < 0.60
+
+
+
+def test_figure4_and_the_charging_figures_use_two_charging_models(fitted, config, chg):
+    """Figure 4's weekly simulation and the published charging rule disagree.
+
+    At 150 miles, the weekly simulation loses under 1% of electric miles at five and at
+    three charges a week. The charging-frequency figures lose 15% and 30% of short-trip
+    electric miles there. The authors' revision notes flagged the mismatch; it went to
+    print.
+    """
+    wp = config["paper_scenarios"]["weekly_profile"]
+    daily = costs.weekly_profile(fitted, config)
+    full = costs.simulate_week(150, daily, wp["charge_nights"][7])["ev_miles"].sum()
+    weekly = {k: 1 - costs.simulate_week(150, daily, wp["charge_nights"][k])["ev_miles"].sum()
+              / full for k in (5, 3)}
+    ev = chg.pivot(index="Vehicle Type", columns="Charges / week", values="Electric VMT (B)")
+    national = {k: 1 - ev.loc[costs.ldv_label(150), k] / ev.loc[costs.ldv_label(150), 7]
+                for k in (5, 3)}
+    print(f"150 mi, electric miles lost: weekly simulation {weekly}, charging figures {national}")
+    assert all(v < 0.01 for v in weekly.values())
+    assert all(v > 0.10 for v in national.values())
