@@ -29,10 +29,15 @@ it a reimplementation; it takes the journal-and-year suffix and stays A.
 
 | axis | answer |
 |---|---|
-| Sensitivity | Public federal data, published open-access paper. Nothing restricted. Repo is private pending Jones's review; the licence choice already anticipates public. |
+| Sensitivity | Public federal data, published open-access paper. Nothing restricted. Cleared by Jones to go public (2026-09-14); the licence choice already anticipates it. |
 | Actively developed | Yes for `src/`, no for `notebooks/`. Git is correct. |
-| In a syncing folder | No. Lives at `C:\Users\akhil\dev\`, deliberately outside OneDrive. The source material it was built from sits in `Downloads\EV Analysis-...` and is not this repo. |
-| Devices that edit | One. No pointer treatment needed while that holds. |
+| In a syncing folder | No. Every clone lives in a developer folder outside OneDrive. Where the original source material sits is recorded in `notebooks/README.md`, not here. |
+| Devices that edit | More than one, each a plain clone of the GitHub remote. That is safe because no clone is in a syncing folder, so no pointer treatment is needed. |
+
+**No machine paths in committed files.** `scripts/check_no_machine_paths.py` fails the
+suite on a home directory, a drive-letter path or a personal SharePoint URL in any
+tracked file, including inside `.xlsx` workbooks. Describe a location in words
+("a developer folder outside OneDrive"), never by its path.
 
 ## Layout that is not obvious from the tree
 
